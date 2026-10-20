@@ -2,6 +2,7 @@
 
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { safeNext } from "@/lib/next-path";
 import { NETWORK_ERROR } from "@/lib/result";
 
 export type FormState = { error?: string; message?: string } | null;
@@ -49,7 +50,7 @@ export async function signUp(_prev: FormState, fd: FormData): Promise<FormState>
   if (needsConfirmation) {
     return { message: `Check your inbox. We sent a confirmation link to ${email}. Open it, then log in.` };
   }
-  redirect("/home");
+  redirect(safeNext(fd.get("next")) ?? "/home");
 }
 
 export async function signIn(_prev: FormState, fd: FormData): Promise<FormState> {
@@ -64,7 +65,7 @@ export async function signIn(_prev: FormState, fd: FormData): Promise<FormState>
   } catch {
     return { error: NETWORK_ERROR };
   }
-  redirect("/home");
+  redirect(safeNext(fd.get("next")) ?? "/home");
 }
 
 export async function signOut(): Promise<void> {

@@ -1,9 +1,13 @@
 import type { Metadata, Viewport } from "next";
+import { RegisterSW } from "@/components/pwa/RegisterSW";
 import "./globals.css";
 
 export const metadata: Metadata = {
   title: "Nama'",
   description: "Drop your food scraps, earn grocery rewards and help local farms grow.",
+  applicationName: "Nama'",
+  appleWebApp: { capable: true, title: "Nama'", statusBarStyle: "default" },
+  formatDetection: { telephone: false },
 };
 
 export const viewport: Viewport = {
@@ -19,7 +23,10 @@ export const viewport: Viewport = {
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en">
-      <body className="min-h-full">{children}</body>
+      <body className="min-h-full">
+        {children}
+        <RegisterSW />
+      </body>
     </html>
   );
 }

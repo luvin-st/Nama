@@ -14,6 +14,7 @@ const PATHS = {
   sprout: "M12 21V11M12 11c-4 0-6-3-6-7 4 0 6 3 6 7zM12 14c0-3 2-6 6-6 0 4-2 6-6 6z",
   flame: "M12 3c1 4 5 5 5 10a5 5 0 0 1-10 0c0-3 2-4 2-6 2 1 3 2 3 4",
   lock: "M5 10h14v10H5zM8 10V7a4 4 0 0 1 8 0v3",
+  share: "M12 3v12M8 7l4-4 4 4M6 11H5v10h14V11h-1",
 } as const;
 
 export type IconName = keyof typeof PATHS;

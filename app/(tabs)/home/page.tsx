@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { DropButton } from "@/components/home/DropButton";
 import { OverviewList } from "@/components/home/OverviewList";
 import { PointsCard } from "@/components/home/PointsCard";
+import { InstallCard } from "@/components/pwa/InstallCard";
 import { RecentDrops } from "@/components/home/RecentDrops";
 import { ProfileButton } from "@/components/ProfileButton";
 import { Notice, ScreenHeader } from "@/components/ui/Bits";
@@ -51,6 +52,7 @@ export default async function HomePage() {
       <DropButton pendingCount={summary.pendingCount} />
       <OverviewList building={building} monthKg={summary.monthKg} />
       <RecentDrops drops={drops} />
+      <InstallCard dismissible />
     </>
   );
 }

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { LogoLockup } from "@/components/brand/Logo";
 import { LinkButton } from "@/components/ui/Button";
 import { Icon, type IconName } from "@/components/ui/Icon";
+import { safeNext, withNext } from "@/lib/next-path";
 
 export const metadata: Metadata = { title: "Welcome · Nama'" };
 
@@ -11,7 +12,10 @@ const STEPS: { icon: IconName; title: string; text: string }[] = [
   { icon: "gift", title: "Earn", text: "Get points for groceries, coffee and bakery treats." },
 ];
 
-export default function WelcomePage() {
+type Props = { searchParams: Promise<{ next?: string }> };
+
+export default async function WelcomePage({ searchParams }: Props) {
+  const next = safeNext((await searchParams).next);
   return (
     <div className="flex flex-1 flex-col gap-4 pt-10 text-center">
       <LogoLockup />
@@ -35,8 +39,8 @@ export default function WelcomePage() {
         ))}
       </ul>
       <div className="mt-auto flex flex-col gap-1 pt-4">
-        <LinkButton href="/signup">Get Started</LinkButton>
-        <LinkButton href="/login" variant="ghost">
+        <LinkButton href={withNext("/signup", next)}>Get Started</LinkButton>
+        <LinkButton href={withNext("/login", next)} variant="ghost">
           I Already Have an Account
         </LinkButton>
       </div>

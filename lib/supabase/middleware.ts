@@ -1,6 +1,7 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 import type { Database } from "@/types/database";
+import { safeNext } from "@/lib/next-path";
 import { supabaseEnv } from "./env";
 
 const PUBLIC_PATHS = ["/welcome", "/login", "/signup"];
@@ -38,18 +39,19 @@ export async function updateSession(request: NextRequest) {
     return redirectTo(request, signedIn ? "/home" : "/welcome", response);
   }
   if (!signedIn && !isPublic) {
-    return redirectTo(request, "/welcome", response);
+    // Remember where they were going (e.g. a scanned bin sticker) so login can send them back.
+    const next = safeNext(path + request.nextUrl.search);
+    return redirectTo(request, "/welcome", response, next ? { next } : undefined);
   }
   if (signedIn && isPublic) {
-    return redirectTo(request, "/home", response);
+    return redirectTo(request, safeNext(request.nextUrl.searchParams.get("next")) ?? "/home", response);
   }
   return response;
 }
 
-function redirectTo(request: NextRequest, pathname: string, from: NextResponse) {
-  const target = request.nextUrl.clone();
-  target.pathname = pathname;
-  target.search = "";
+function redirectTo(request: NextRequest, to: string, from: NextResponse, params?: Record<string, string>) {
+  const target = new URL(to, request.nextUrl.origin);
+  Object.entries(params ?? {}).forEach(([k, v]) => target.searchParams.set(k, v));
   const res = NextResponse.redirect(target);
   from.cookies.getAll().forEach((c) => res.cookies.set(c));
   return res;
