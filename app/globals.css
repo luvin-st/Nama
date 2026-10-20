@@ -1,0 +1,87 @@
+@import "tailwindcss";
+
+/* Nama' design tokens. Light values first; dark values redefine the same tokens. */
+:root {
+  --ground: #f2f5ec;
+  --card: #ffffff;
+  --ink: #10241b;
+  --muted: #5b6b62;
+  --sep: #d5ddd0;
+  --chip: #e6eddd;
+  --track: #e3e9de;
+  --hero: #0f3d2e;
+  --hero-2: #1b4a3a;
+  --on-hero: #ffffff;
+  --on-hero-muted: #cfe6d8;
+  --leaf: #2f7a4d;
+  --primary: #0f3d2e;
+  --on-primary: #ffffff;
+  --link: #0f3d2e;
+  --logo-ink: #0f3d2e;
+  --logo-leaf: #3e9a5c;
+  --danger: #b3261e;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --ground: #0b1510;
+    --card: #15231c;
+    --ink: #eaf2e6;
+    --muted: #a3b5aa;
+    --sep: #273a30;
+    --chip: #20332a;
+    --track: #1e2f26;
+    --hero: #17432f;
+    --hero-2: #215440;
+    --leaf: #7cc48f;
+    --primary: #d7f26a;
+    --on-primary: #0f3d2e;
+    --link: #d7f26a;
+    --logo-ink: #eaf2e6;
+    --logo-leaf: #8bd39c;
+    --danger: #ffb4a9;
+    color-scheme: dark;
+  }
+}
+
+@theme inline {
+  --color-ground: var(--ground);
+  --color-card: var(--card);
+  --color-ink: var(--ink);
+  --color-muted: var(--muted);
+  --color-sep: var(--sep);
+  --color-chip: var(--chip);
+  --color-track: var(--track);
+  --color-hero: var(--hero);
+  --color-hero-2: var(--hero-2);
+  --color-on-hero: var(--on-hero);
+  --color-on-hero-muted: var(--on-hero-muted);
+  --color-leaf: var(--leaf);
+  --color-primary: var(--primary);
+  --color-on-primary: var(--on-primary);
+  --color-link: var(--link);
+  --color-danger: var(--danger);
+  /* Fixed brand colours (same in both themes) */
+  --color-forest: #0f3d2e;
+  --color-lime: #d7f26a;
+  --color-lime-ink: #0f3d2e;
+  --color-night: #10241b;
+  --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  background: var(--ground);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+:focus-visible {
+  outline: 3px solid var(--leaf);
+  outline-offset: 2px;
+}
