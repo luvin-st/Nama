@@ -1,5 +1,5 @@
 /**
- * Types for the Supabase schema in supabase/migrations/ (0001–0004).
+ * Types for the Supabase schema in supabase/migrations/ (0001–0005).
  * Can be regenerated later with: npx supabase gen types typescript --project-id <id>
  */
 
@@ -34,9 +34,17 @@ export type Database = {
         Relationships: [Rel<"bins_building_id_fkey", "building_id", "buildings">];
       };
       profiles: {
-        Row: { id: Uuid; name: string; building_id: Uuid | null; flat: string | null; role: Role; created_at: Timestamp };
+        Row: {
+          id: Uuid;
+          name: string;
+          building_id: Uuid | null;
+          flat: string | null;
+          role: Role;
+          show_on_leaderboard: boolean;
+          created_at: Timestamp;
+        };
         Insert: { id: Uuid; name: string; building_id?: Uuid | null; flat?: string | null; role?: Role };
-        Update: { name?: string; building_id?: Uuid | null; flat?: string | null };
+        Update: { name?: string; building_id?: Uuid | null; flat?: string | null; show_on_leaderboard?: boolean };
         Relationships: [Rel<"profiles_building_id_fkey", "building_id", "buildings">];
       };
       deposits: {
@@ -99,6 +107,22 @@ export type Database = {
       reject_deposit: { Args: { p_id: string; p_reason: string }; Returns: undefined };
       redeem_reward: { Args: { p_reward: string }; Returns: string };
       use_voucher: { Args: { p_code: string }; Returns: undefined };
+      get_my_impact: {
+        Args: Record<never, never>;
+        Returns: { total_kg: number; verified_drops: number; rewards_redeemed: number }[];
+      };
+      get_building_impact: {
+        Args: Record<never, never>;
+        Returns: { building_name: string; month_kg: number; total_kg: number; residents: number; active_this_month: number }[];
+      };
+      get_building_ranking: {
+        Args: Record<never, never>;
+        Returns: { building_name: string; residents: number; month_kg: number; kg_per_resident: number; is_mine: boolean }[];
+      };
+      get_neighbour_leaderboard: {
+        Args: Record<never, never>;
+        Returns: { rank: number; display_name: string; month_kg: number; is_me: boolean; hidden: boolean }[];
+      };
     };
     Enums: Record<never, never>;
     CompositeTypes: Record<never, never>;

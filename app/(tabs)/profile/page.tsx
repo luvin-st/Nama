@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { signOut } from "@/app/(auth)/actions";
 import { Notice, ScreenHeader } from "@/components/ui/Bits";
+import { LeaderboardToggle } from "@/components/LeaderboardToggle";
 import { GroupLabel, ListGroup, ListRow } from "@/components/ui/List";
 import { getProfile, initials } from "@/lib/data/profile";
 
@@ -37,6 +38,10 @@ export default async function ProfilePage() {
         <ListRow title="Building" trailing={value(p.building?.name ?? "Not set")} />
         <ListRow title="Flat" trailing={value(p.flat ?? "Not set")} />
         <ListRow title="Pickup day" trailing={value(p.building?.pickup_day ?? "—")} />
+      </ListGroup>
+      <GroupLabel>Privacy</GroupLabel>
+      <ListGroup>
+        <LeaderboardToggle initial={p.showOnLeaderboard} />
       </ListGroup>
       <GroupLabel>Account</GroupLabel>
       <ListGroup>

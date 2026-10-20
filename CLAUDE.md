@@ -23,6 +23,7 @@
 - `app/(tabs)/` — Home, Rewards, Impact, Guide screens sharing the bottom `components/TabBar.tsx`
 - `app/scan/` — bin scanning flow (scan → confirm → done); `components/scan/`; `app/staff/` — staff-only pages (drop queue, check screen, bin stickers); drops change only via the `verify_deposit` / `reject_deposit` SQL functions
 - `app/(tabs)/rewards/` — rewards list, redeem sheet, vouchers; vouchers are made only by `redeem_reward` and marked used only by `use_voucher` (staff, `/staff/vouchers`)
+- `app/(tabs)/impact/` + `components/impact/` — impact card, building totals, building + neighbour leaderboards, badges (`lib/badges.ts`); shared numbers come only from SECURITY DEFINER functions in `0005_impact.sql` that return totals and short names
 - `components/ui/` — shared building blocks (Button, List, Segmented, Sheet, Icon, Bits)
 - `components/brand/Logo.tsx` — bilingual Nama' | نماء logo
 - `app/globals.css` — design tokens (light + dark); use the Tailwind colour names (`bg-ground`, `bg-card`, `text-ink`, `text-muted`, `bg-forest`, `bg-lime`…)
@@ -38,5 +39,5 @@
 4. Scan + pending deposit ✅
 5. Staff verification (points only after verification) ✅
 6. Rewards + redemption ✅
-7. Impact (building totals, leaderboard, badges)
+7. Impact (building totals, leaderboard, badges) ✅
 8. PWA install + deploy

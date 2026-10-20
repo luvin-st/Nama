@@ -8,6 +8,7 @@ export type ProfileView = {
   email: string;
   flat: string | null;
   role: Role;
+  showOnLeaderboard: boolean;
   building: Pick<Tables<"buildings">, "id" | "name" | "pickup_day" | "bin_spot"> | null;
 };
 
@@ -20,12 +21,13 @@ export async function getProfile(): Promise<Result<ProfileView>> {
 
     const { data, error } = await supabase
       .from("profiles")
-      .select("id, name, flat, role, building:buildings(id, name, pickup_day, bin_spot)")
+      .select("id, name, flat, role, show_on_leaderboard, building:buildings(id, name, pickup_day, bin_spot)")
       .eq("id", auth.user.id)
       .single();
     if (error || !data) return fail("We couldn't load your profile. Please try again.");
 
-    return ok({ ...data, email: auth.user.email ?? "" });
+    const { show_on_leaderboard, ...rest } = data;
+    return ok({ ...rest, showOnLeaderboard: show_on_leaderboard, email: auth.user.email ?? "" });
   } catch {
     return fail(NETWORK_ERROR);
   }
