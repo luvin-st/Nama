@@ -33,7 +33,7 @@
 # Build roadmap
 1. Scaffold, design system, tab bar, Sorting Guide ✅
 2. Supabase schema + accounts (sign up / log in / profile) ✅
-3. Home (points, streak, pickup, recent drops)
+3. Home (points, streak, pickup, recent drops) ✅
 4. Scan + pending deposit
 5. Staff verification (points only after verification)
 6. Rewards + redemption

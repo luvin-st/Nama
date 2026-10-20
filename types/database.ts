@@ -69,7 +69,13 @@ export type Database = {
       };
     };
     Views: Record<never, never>;
-    Functions: { is_staff: { Args: Record<never, never>; Returns: boolean } };
+    Functions: {
+      is_staff: { Args: Record<never, never>; Returns: boolean };
+      get_my_summary: {
+        Args: Record<never, never>;
+        Returns: { points: number; streak_weeks: number; month_kg: number; pending_count: number }[];
+      };
+    };
     Enums: Record<never, never>;
     CompositeTypes: Record<never, never>;
   };
