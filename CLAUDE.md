@@ -25,11 +25,14 @@
 - `components/ui/` — shared building blocks (Button, List, Segmented, Sheet, Icon, Bits)
 - `components/brand/Logo.tsx` — bilingual Nama' | نماء logo
 - `app/globals.css` — design tokens (light + dark); use the Tailwind colour names (`bg-ground`, `bg-card`, `text-ink`, `text-muted`, `bg-forest`, `bg-lime`…)
-- `lib/` — data and helpers
+- `lib/` — data and helpers; `lib/data/*` = typed Supabase queries returning `Result<T>` (`lib/result.ts`)
+- `lib/supabase/` — browser + server clients and session middleware
+- `supabase/migrations/` + `supabase/seed.sql` — database schema and pilot settings (run in the Supabase SQL Editor)
+- `types/database.ts` — table types; keep in sync with migrations
 
 # Build roadmap
 1. Scaffold, design system, tab bar, Sorting Guide ✅
-2. Supabase schema + accounts (sign up / log in / profile)
+2. Supabase schema + accounts (sign up / log in / profile) ✅
 3. Home (points, streak, pickup, recent drops)
 4. Scan + pending deposit
 5. Staff verification (points only after verification)
