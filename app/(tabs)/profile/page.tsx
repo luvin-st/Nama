@@ -42,6 +42,14 @@ export default async function ProfilePage() {
       <ListGroup>
         <ListRow title="Email" trailing={value(p.email)} />
       </ListGroup>
+      {p.role === "staff" ? (
+        <>
+          <GroupLabel>Staff</GroupLabel>
+          <ListGroup>
+            <ListRow title="Bin QR stickers" href="/staff/bin-codes" />
+          </ListGroup>
+        </>
+      ) : null}
       <form action={signOut}>
         <ListGroup>
           <button type="submit" className="w-full px-4 py-3 text-center text-[17px] text-danger">

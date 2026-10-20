@@ -21,7 +21,7 @@
 
 # Project map
 - `app/(tabs)/` — Home, Rewards, Impact, Guide screens sharing the bottom `components/TabBar.tsx`
-- `app/scan/` — bin scanning flow
+- `app/scan/` — bin scanning flow (scan → confirm → done); `components/scan/`; `app/staff/` — staff-only pages
 - `components/ui/` — shared building blocks (Button, List, Segmented, Sheet, Icon, Bits)
 - `components/brand/Logo.tsx` — bilingual Nama' | نماء logo
 - `app/globals.css` — design tokens (light + dark); use the Tailwind colour names (`bg-ground`, `bg-card`, `text-ink`, `text-muted`, `bg-forest`, `bg-lime`…)
@@ -34,7 +34,7 @@
 1. Scaffold, design system, tab bar, Sorting Guide ✅
 2. Supabase schema + accounts (sign up / log in / profile) ✅
 3. Home (points, streak, pickup, recent drops) ✅
-4. Scan + pending deposit
+4. Scan + pending deposit ✅
 5. Staff verification (points only after verification)
 6. Rewards + redemption
 7. Impact (building totals, leaderboard, badges)

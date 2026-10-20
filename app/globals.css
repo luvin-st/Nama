@@ -66,6 +66,11 @@
   --color-lime: #d7f26a;
   --color-lime-ink: #0f3d2e;
   --color-night: #10241b;
+  /* Scan flow: one dark look in both themes */
+  --color-scan: #0b2f23;
+  --color-scan-card: #12392c;
+  --color-scan-raised: #1b4a3a;
+  --color-scan-line: #2c5e48;
   --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
 }
 
