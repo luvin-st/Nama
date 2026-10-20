@@ -91,3 +91,49 @@ export async function getDropForStaff(id: string): Promise<Result<StaffDrop | nu
     return fail(NETWORK_ERROR);
   }
 }
+
+export type StaffVoucher = {
+  id: string;
+  code: string;
+  userId: string;
+  createdAt: string;
+  usedAt: string | null;
+  resident: { name: string; flat: string | null };
+  reward: { title: string; partner: string };
+};
+
+type VoucherRow = {
+  id: string;
+  code: string;
+  user_id: string;
+  created_at: string;
+  used_at: string | null;
+  resident: { name: string; flat: string | null } | null;
+  reward: { title: string; partner: string } | null;
+};
+
+/** A voucher by its code, with who it belongs to. `ok(null)` means no such voucher. */
+export async function getVoucherByCode(code: string): Promise<Result<StaffVoucher | null>> {
+  try {
+    const supabase = await createClient();
+    const { data, error } = await supabase
+      .from("redemptions")
+      .select("id, code, user_id, created_at, used_at, resident:profiles!redemptions_user_id_fkey(name, flat), reward:rewards(title, partner)")
+      .eq("code", code)
+      .overrideTypes<VoucherRow[], { merge: false }>();
+    if (error) return fail("We couldn't look up that voucher. Please try again.");
+    const v = data[0];
+    if (!v) return ok(null);
+    return ok({
+      id: v.id,
+      code: v.code,
+      userId: v.user_id,
+      createdAt: v.created_at,
+      usedAt: v.used_at,
+      resident: { name: v.resident?.name ?? "Resident", flat: v.resident?.flat ?? null },
+      reward: { title: v.reward?.title ?? "Reward", partner: v.reward?.partner ?? "Nama' partner" },
+    });
+  } catch {
+    return fail(NETWORK_ERROR);
+  }
+}

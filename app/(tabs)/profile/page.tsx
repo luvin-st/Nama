@@ -47,6 +47,7 @@ export default async function ProfilePage() {
           <GroupLabel>Staff</GroupLabel>
           <ListGroup>
             <ListRow title="Check drops" href="/staff" />
+            <ListRow title="Check vouchers" href="/staff/vouchers" />
             <ListRow title="Bin QR stickers" href="/staff/bin-codes" />
           </ListGroup>
         </>

@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { isRejectReason } from "@/lib/drops";
+import { parseVoucherCode } from "@/lib/rewards";
 import { MAX_KG, MIN_KG, parseKg } from "@/lib/points";
 import { NETWORK_ERROR } from "@/lib/result";
 import { createClient } from "@/lib/supabase/server";
@@ -16,6 +17,8 @@ const DB_ERRORS: Record<string, string> = {
   NOT_FOUND: "We couldn't find this drop. It may have been removed.",
   BAD_WEIGHT: `Enter a weight between ${MIN_KG} and ${MAX_KG} kg.`,
   BAD_REASON: "Choose a reason for rejecting this drop.",
+  OWN_VOUCHER: "You can't mark your own voucher as used. Another staff member needs to do it.",
+  ALREADY_USED: "This voucher has already been used.",
 };
 
 function friendly(message: string | undefined): string {
@@ -66,4 +69,23 @@ export async function rejectDrop(_prev: StaffFormState, fd: FormData): Promise<S
 
   revalidatePath("/staff");
   redirect("/staff?done=rejected");
+}
+
+/** Marks a voucher as used at the shop, so it can't be used again. */
+export async function markVoucherUsed(_prev: StaffFormState, fd: FormData): Promise<StaffFormState> {
+  const code = parseVoucherCode(String(fd.get("code") ?? ""));
+  if (!code) return { error: "That isn't a Nama' voucher code. Codes look like NAMA-7KQ4-X2PB." };
+
+  try {
+    const supabase = await createClient();
+    const { error } = await supabase.rpc("use_voucher", { p_code: code });
+    if (error) {
+      return { error: error.message.includes("NOT_FOUND") ? "We couldn't find a voucher with that code." : friendly(error.message) };
+    }
+  } catch {
+    return { error: NETWORK_ERROR };
+  }
+
+  revalidatePath("/staff/vouchers");
+  redirect(`/staff/vouchers?code=${encodeURIComponent(code)}&done=1`);
 }

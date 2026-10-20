@@ -1,5 +1,5 @@
 /**
- * Types for the Supabase schema in supabase/migrations/ (0001–0003).
+ * Types for the Supabase schema in supabase/migrations/ (0001–0004).
  * Can be regenerated later with: npx supabase gen types typescript --project-id <id>
  */
 
@@ -68,10 +68,24 @@ export type Database = {
         Relationships: [];
       };
       redemptions: {
-        Row: { id: Uuid; user_id: Uuid; reward_id: Uuid; code: string; points_spent: number; created_at: Timestamp };
+        Row: {
+          id: Uuid;
+          user_id: Uuid;
+          reward_id: Uuid;
+          code: string;
+          points_spent: number;
+          created_at: Timestamp;
+          used_at: Timestamp | null;
+          used_by: Uuid | null;
+        };
+        /** Vouchers are made only by redeem_reward() and marked used only by use_voucher(). */
         Insert: never;
         Update: never;
-        Relationships: [Rel<"redemptions_reward_id_fkey", "reward_id", "rewards">];
+        Relationships: [
+          Rel<"redemptions_reward_id_fkey", "reward_id", "rewards">,
+          Rel<"redemptions_user_id_fkey", "user_id", "profiles">,
+          Rel<"redemptions_used_by_fkey", "used_by", "profiles">,
+        ];
       };
     };
     Views: Record<never, never>;
@@ -83,6 +97,8 @@ export type Database = {
       };
       verify_deposit: { Args: { p_id: string; p_weight: number }; Returns: number };
       reject_deposit: { Args: { p_id: string; p_reason: string }; Returns: undefined };
+      redeem_reward: { Args: { p_reward: string }; Returns: string };
+      use_voucher: { Args: { p_code: string }; Returns: undefined };
     };
     Enums: Record<never, never>;
     CompositeTypes: Record<never, never>;
