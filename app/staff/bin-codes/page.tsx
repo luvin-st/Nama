@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
 import { headers } from "next/headers";
 import QRCode from "qrcode";
-import { BackBar } from "@/components/auth/BackBar";
+import { StaffPage } from "@/components/staff/StaffPage";
 import { Notice } from "@/components/ui/Bits";
 import { stickerUrl } from "@/lib/bins";
 import { getAllBins, type BinView } from "@/lib/data/bins";
-import { getProfile } from "@/lib/data/profile";
+import { getStaffProfile } from "@/lib/data/staff";
 
 export const metadata: Metadata = { title: "Bin Stickers · Nama'" };
 
@@ -40,18 +40,14 @@ async function Sticker({ bin, base }: { bin: BinView; base: string }) {
 }
 
 export default async function BinCodesPage() {
-  const profile = await getProfile();
+  const profile = await getStaffProfile();
   const page = (body: React.ReactNode) => (
-    <main className="mx-auto flex max-w-[720px] flex-col gap-4 pt-[calc(env(safe-area-inset-top,0px)+20px)] pb-10 pl-[max(16px,env(safe-area-inset-left,0px))] pr-[max(16px,env(safe-area-inset-right,0px))]">
-      <BackBar href="/profile" title="Bin Stickers" />
+    <StaffPage title="Bin Stickers" backHref="/profile" wide>
       {body}
-    </main>
+    </StaffPage>
   );
 
   if (!profile.ok) return page(<Notice tone="error">{profile.error}</Notice>);
-  if (profile.data.role !== "staff") {
-    return page(<Notice>This page is for Nama&apos; staff. Ask an admin to give your account staff access.</Notice>);
-  }
 
   const bins = await getAllBins();
   if (!bins.ok) return page(<Notice tone="error">{bins.error}</Notice>);

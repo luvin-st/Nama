@@ -44,7 +44,9 @@ export default async function DonePage({ params }: { params: Promise<{ id: strin
             {d.kg !== null ? `${formatKg(d.kg)} · ` : ""}+{d.points} points added
           </span>
         ) : rejected ? (
-          <span className="rounded-full bg-scan-raised px-4 py-2 text-[15px]">This drop had items that can&apos;t be composted.</span>
+          <span className="block rounded-[14px] bg-scan-raised px-4 py-2 text-center text-[15px]">
+            {d.rejectReason ? `Reason: ${d.rejectReason}. ` : ""}No points were added.
+          </span>
         ) : (
           <span className="flex items-center gap-2 rounded-full bg-scan-raised px-4 py-2 text-[15px]">
             <span aria-hidden="true" className="size-3.5 animate-spin rounded-full border-2 border-on-hero-muted border-t-transparent motion-reduce:animate-none" />

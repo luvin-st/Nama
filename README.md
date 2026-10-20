@@ -31,4 +31,4 @@ npx tsc --noEmit
 
 ## Status
 
-See the roadmap in `CLAUDE.md`. Features 1–4 are done: the design system, Sorting Guide, accounts, profile, the Home screen and bin scanning (drops stay "Checking" until staff verify them in Feature 5). Staff can print bin QR stickers at `/staff/bin-codes`. The phone camera needs https, so on a phone use Enter Code Manually until the app is deployed. After pulling a new feature, run any new file in `supabase/migrations/` in the SQL Editor.
+See the roadmap in `CLAUDE.md`. Features 1–5 are done: the design system, Sorting Guide, accounts, profile, the Home screen, bin scanning and staff verification. Staff open **Profile → Check drops** to weigh each drop (20 points per kg) or reject it with a reason; staff can't check their own drops. Staff can print bin QR stickers at `/staff/bin-codes`. The phone camera needs https, so on a phone use Enter Code Manually until the app is deployed. After pulling a new feature, run any new file in `supabase/migrations/` in the SQL Editor.

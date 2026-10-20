@@ -9,6 +9,7 @@ export type RecentDrop = {
   kg: number | null;
   points: number;
   status: DepositStatus;
+  rejectReason: string | null;
   createdAt: string;
   building: string;
 };
@@ -26,7 +27,7 @@ export async function getHomeData(): Promise<Result<HomeData>> {
       supabase.from("rewards").select("title, points_cost").eq("active", true).order("points_cost"),
       supabase
         .from("deposits")
-        .select("id, weight_kg, points, status, created_at, bin:bins(building:buildings(name))")
+        .select("id, weight_kg, points, status, reject_reason, created_at, bin:bins(building:buildings(name))")
         .eq("user_id", auth.user.id)
         .order("created_at", { ascending: false })
         .limit(5),
@@ -49,6 +50,7 @@ export async function getHomeData(): Promise<Result<HomeData>> {
       kg: d.weight_kg === null ? null : Number(d.weight_kg),
       points: d.points,
       status: d.status,
+      rejectReason: d.reject_reason,
       createdAt: d.created_at,
       building: d.bin?.building?.name ?? "Your building",
     }));

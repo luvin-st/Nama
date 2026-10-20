@@ -1,7 +1,7 @@
 import Link from "next/link";
 import type { ButtonHTMLAttributes, ReactNode } from "react";
 
-type Variant = "primary" | "lime" | "tint" | "ghost";
+export type Variant = "primary" | "lime" | "tint" | "ghost";
 
 const VARIANTS: Record<Variant, string> = {
   primary: "bg-primary text-on-primary",

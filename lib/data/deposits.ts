@@ -7,6 +7,7 @@ export type DepositView = {
   status: DepositStatus;
   kg: number | null;
   points: number;
+  rejectReason: string | null;
   createdAt: string;
   binLabel: string;
   building: string;
@@ -19,7 +20,7 @@ export async function getDeposit(id: string): Promise<Result<DepositView | null>
     const supabase = await createClient();
     const { data, error } = await supabase
       .from("deposits")
-      .select("id, status, weight_kg, points, created_at, bin:bins(label, building:buildings(name))")
+      .select("id, status, weight_kg, points, reject_reason, created_at, bin:bins(label, building:buildings(name))")
       .eq("id", id)
       .maybeSingle();
     if (error) return fail("We couldn't load your drop. Please try again.");
@@ -29,6 +30,7 @@ export async function getDeposit(id: string): Promise<Result<DepositView | null>
       status: data.status,
       kg: data.weight_kg === null ? null : Number(data.weight_kg),
       points: data.points,
+      rejectReason: data.reject_reason,
       createdAt: data.created_at,
       binLabel: data.bin?.label ?? "Bin",
       building: data.bin?.building?.name ?? "Your building",

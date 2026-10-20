@@ -11,7 +11,7 @@ const STATUS = {
 
 function DropTitle({ drop }: { drop: RecentDrop }) {
   if (drop.status === "pending") return <>Waiting to be weighed</>;
-  if (drop.status === "rejected") return <>{drop.kg !== null ? formatKg(drop.kg) : "Drop"} · no points</>;
+  if (drop.status === "rejected") return <>{drop.rejectReason ?? "Not accepted"} · no points</>;
   return (
     <span className="tabular-nums">
       {drop.kg !== null ? formatKg(drop.kg) : "Drop"} · <span className="text-muted">+{drop.points} pts</span>

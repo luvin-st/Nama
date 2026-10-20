@@ -1,5 +1,5 @@
 /**
- * Types for the Supabase schema in supabase/migrations/0001_init.sql.
+ * Types for the Supabase schema in supabase/migrations/ (0001–0003).
  * Can be regenerated later with: npx supabase gen types typescript --project-id <id>
  */
 
@@ -50,10 +50,16 @@ export type Database = {
           created_at: Timestamp;
           verified_at: Timestamp | null;
           verified_by: Uuid | null;
+          reject_reason: string | null;
         };
         Insert: { id?: Uuid; user_id?: Uuid; bin_id: Uuid };
-        Update: { weight_kg?: number | null; points?: number; status?: DepositStatus; verified_at?: Timestamp | null; verified_by?: Uuid | null };
-        Relationships: [Rel<"deposits_bin_id_fkey", "bin_id", "bins">, Rel<"deposits_user_id_fkey", "user_id", "profiles">];
+        /** Drops are changed only through verify_deposit() / reject_deposit(). */
+        Update: never;
+        Relationships: [
+          Rel<"deposits_bin_id_fkey", "bin_id", "bins">,
+          Rel<"deposits_user_id_fkey", "user_id", "profiles">,
+          Rel<"deposits_verified_by_fkey", "verified_by", "profiles">,
+        ];
       };
       rewards: {
         Row: { id: Uuid; title: string; partner: string; category: RewardCategory; points_cost: number; active: boolean; created_at: Timestamp };
@@ -75,6 +81,8 @@ export type Database = {
         Args: Record<never, never>;
         Returns: { points: number; streak_weeks: number; month_kg: number; pending_count: number }[];
       };
+      verify_deposit: { Args: { p_id: string; p_weight: number }; Returns: number };
+      reject_deposit: { Args: { p_id: string; p_reason: string }; Returns: undefined };
     };
     Enums: Record<never, never>;
     CompositeTypes: Record<never, never>;
