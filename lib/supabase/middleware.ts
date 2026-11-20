@@ -5,6 +5,8 @@ import { safeNext } from "@/lib/next-path";
 import { supabaseEnv } from "./env";
 
 const PUBLIC_PATHS = ["/welcome", "/login", "/signup"];
+/** Open to everyone, signed in or not (restaurant demo shown from a QR code). */
+const OPEN_PATHS = ["/restaurant"];
 
 /** Refreshes the login session cookie and sends people to the right side of the app. */
 export async function updateSession(request: NextRequest) {
@@ -33,6 +35,7 @@ export async function updateSession(request: NextRequest) {
   }
 
   const path = request.nextUrl.pathname;
+  if (OPEN_PATHS.some((p) => path === p || path.startsWith(`${p}/`))) return response;
   const isPublic = PUBLIC_PATHS.some((p) => path === p || path.startsWith(`${p}/`));
 
   if (path === "/") {

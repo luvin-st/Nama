@@ -25,6 +25,7 @@
 - `app/(tabs)/rewards/` — rewards list, redeem sheet, vouchers; vouchers are made only by `redeem_reward` and marked used only by `use_voucher` (staff, `/staff/vouchers`)
 - `app/(tabs)/impact/` + `components/impact/` — impact card, building totals, building + neighbour leaderboards, badges (`lib/badges.ts`); shared numbers come only from SECURITY DEFINER functions in `0005_impact.sql` that return totals and short names
 - PWA: `app/manifest.ts`, `public/sw.js` (caches build files + icons only, never data; serves `public/offline.html`), `components/pwa/` (RegisterSW, InstallCard); icons in `public/icons/` drawn by `scripts/make-icons.ts`
+- Restaurant demo (B2B pitch, no login): `app/restaurant/` (Log a bin, Pickups, Owner report) + `components/restaurant/`; data only via `kitchen_*` functions in `0006_restaurant_demo.sql` (tables locked); sample data for made-up "Rania's Kitchen" is seeded there and tuned to AED 7,480 / 45-35-20; `lib/kitchen.ts` helpers; `/restaurant` is in OPEN_PATHS in `lib/supabase/middleware.ts`
 - `components/ui/` — shared building blocks (Button, List, Segmented, Sheet, Icon, Bits)
 - `components/brand/Logo.tsx` — bilingual Nama' | نماء logo
 - `app/globals.css` — design tokens (light + dark); use the Tailwind colour names (`bg-ground`, `bg-card`, `text-ink`, `text-muted`, `bg-forest`, `bg-lime`…)
@@ -42,3 +43,4 @@
 6. Rewards + redemption ✅
 7. Impact (building totals, leaderboard, badges) ✅
 8. PWA install + deploy ✅
+9. Restaurant demo for the IEN pitch (`/restaurant`) ✅

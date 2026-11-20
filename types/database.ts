@@ -1,5 +1,5 @@
 /**
- * Types for the Supabase schema in supabase/migrations/ (0001–0005).
+ * Types for the Supabase schema in supabase/migrations/ (0001–0006).
  * Can be regenerated later with: npx supabase gen types typescript --project-id <id>
  */
 
@@ -123,6 +123,11 @@ export type Database = {
         Args: Record<never, never>;
         Returns: { rank: number; display_name: string; month_kg: number; is_me: boolean; hidden: boolean }[];
       };
+      // Restaurant demo (0006). The dashboard JSON is checked in lib/data/kitchen.ts.
+      kitchen_dashboard: { Args: Record<never, never>; Returns: unknown };
+      kitchen_log_bin: { Args: { p_branch_id: number; p_waste_type: string; p_weight_kg: number }; Returns: number };
+      kitchen_request_pickup: { Args: Record<never, never>; Returns: string };
+      kitchen_reset_demo: { Args: Record<never, never>; Returns: undefined };
     };
     Enums: Record<never, never>;
     CompositeTypes: Record<never, never>;
