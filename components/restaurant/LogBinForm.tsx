@@ -6,28 +6,33 @@ import { SubmitButton } from "@/components/auth/SubmitButton";
 import { Icon } from "@/components/ui/Icon";
 import { GroupLabel, ListGroup, RowIcon } from "@/components/ui/Group";
 import { Segmented } from "@/components/ui/Segmented";
-import { useRefreshAfter } from "@/lib/use-refresh-after";
-import { MAX_LOG_KG, parseLogKg, WASTE, WASTE_TYPES, type WasteType } from "@/lib/kitchen";
+import { MAX_LOG_KG, parseLogKg, WASTE, WASTE_TYPES, type BinLog, type WasteType } from "@/lib/kitchen";
+import { RecentLogs } from "./RecentLogs";
 
 type BranchOption = { id: number; name: string };
 
 /** Log a bin: branch, waste type, weight, Save. */
-export function LogBinForm({ branches, initialBranchId }: { branches: BranchOption[]; initialBranchId: number | null }) {
+type Props = { branches: BranchOption[]; initialBranchId: number | null; recentLogs: BinLog[] };
+
+/** Log a bin form plus the "Latest bins" list; a saved bin is added to the top of the list straight away. */
+export function LogBinForm({ branches, initialBranchId, recentLogs }: Props) {
   const [state, action] = useActionState<LogState, FormData>(logBin, null);
   const [branchId, setBranchId] = useState<number | null>(initialBranchId ?? branches[0]?.id ?? null);
   const [type, setType] = useState<WasteType | null>(null);
   const [kg, setKg] = useState("");
   const [clearedAt, setClearedAt] = useState(0);
-  useRefreshAfter(state?.ok ? state.at : undefined);
+  const [logs, setLogs] = useState(recentLogs);
   // After a successful save, empty the weight box (once per save) but keep branch and type.
   if (state?.ok && state.at !== clearedAt) {
     setClearedAt(state.at);
     setKg("");
+    setLogs((prev) => [state.log, ...prev.filter((l) => l.id !== state.log.id)].slice(0, 5));
   }
   const branchName = branches.find((b) => b.id === branchId)?.name ?? "";
   const ready = branchId !== null && type !== null && parseLogKg(kg) !== null;
 
   return (
+    <>
     <form action={action} className="flex flex-col gap-4">
       <input type="hidden" name="branch" value={branchId ?? ""} />
       <input type="hidden" name="branchName" value={branchName} />
@@ -98,5 +103,7 @@ export function LogBinForm({ branches, initialBranchId }: { branches: BranchOpti
         ) : null}
       </div>
     </form>
+    <RecentLogs logs={logs} />
+    </>
   );
 }

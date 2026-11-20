@@ -3,7 +3,6 @@
 import { useActionState, useState } from "react";
 import { useFormStatus } from "react-dom";
 import { resetDemo, type SimpleState } from "@/app/restaurant/actions";
-import { useRefreshAfter } from "@/lib/use-refresh-after";
 
 const LINK = "text-[13px] font-medium underline underline-offset-2";
 
@@ -21,10 +20,13 @@ export function ResetDemo() {
   const [armed, setArmed] = useState(false);
   const [state, action] = useActionState<SimpleState, FormData>(async () => {
     const result = await resetDemo();
-    if (!result?.error) setArmed(false);
+    if (!result?.error) {
+      setArmed(false);
+      // A full reload is the surest way to show the sample numbers again (AED 7,480).
+      window.location.reload();
+    }
     return result;
   }, null);
-  useRefreshAfter(state?.done);
 
   return (
     <div className="flex flex-col items-center gap-1 pt-2">

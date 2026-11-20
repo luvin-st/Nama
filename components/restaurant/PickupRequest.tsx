@@ -24,8 +24,9 @@ function RequestButton() {
 export function PickupRequest({ openRequest }: { openRequest: string | null }) {
   const [state, action] = useActionState<SimpleState, FormData>(requestPickup, null);
   useRefreshAfter(state?.done);
+  const sentAt = openRequest ?? (state?.done ? new Date(state.done).toISOString() : null);
 
-  if (openRequest) {
+  if (sentAt) {
     return (
       <div role="status">
         <ListGroup>
@@ -36,7 +37,7 @@ export function PickupRequest({ openRequest }: { openRequest: string | null }) {
               </RowIcon>
             }
             title="Pickup requested"
-            note={`Sent ${relativeDay(openRequest).toLowerCase()} at ${clockTime(openRequest)}. Our driver will come within 24 hours.`}
+            note={`Sent ${relativeDay(sentAt).toLowerCase()} at ${clockTime(sentAt)}. Our driver will come within 24 hours.`}
           />
         </ListGroup>
       </div>

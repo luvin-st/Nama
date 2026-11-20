@@ -1,10 +1,11 @@
 "use server";
 
-import { isWasteType, MAX_LOG_KG, MIN_LOG_KG, parseLogKg, WASTE } from "@/lib/kitchen";
+import { isWasteType, MAX_LOG_KG, MIN_LOG_KG, parseLogKg, WASTE, type BinLog } from "@/lib/kitchen";
 import { NETWORK_ERROR } from "@/lib/result";
 import { createClient } from "@/lib/supabase/server";
 
-export type LogState = { ok: true; message: string; at: number } | { ok: false; error: string } | null;
+/** On success, `log` is the bin just saved, so the screen can add it to "Latest bins" without reloading. */
+export type LogState = { ok: true; message: string; at: number; log: BinLog } | { ok: false; error: string } | null;
 export type SimpleState = { error?: string; done?: number } | null;
 
 const DB_ERRORS: Record<string, string> = {
@@ -33,15 +34,24 @@ export async function logBin(_prev: LogState, fd: FormData): Promise<LogState> {
   const kg = parseLogKg(String(fd.get("weight") ?? ""));
   if (kg === null) return { ok: false, error: `${DB_ERRORS.BAD_WEIGHT} For example 4.5` };
 
+  let logId: number;
+
   try {
     const supabase = await createClient();
-    const { error } = await supabase.rpc("kitchen_log_bin", { p_branch_id: branchId, p_waste_type: type, p_weight_kg: kg });
+    const { data, error } = await supabase.rpc("kitchen_log_bin", { p_branch_id: branchId, p_waste_type: type, p_weight_kg: kg });
     if (error) return { ok: false, error: friendly(error.message) };
+    logId = Number(data);
   } catch {
     return { ok: false, error: NETWORK_ERROR };
   }
 
-  return { ok: true, message: `Saved: ${kg} kg ${WASTE[type].label.toLowerCase()} at ${branchName}`, at: Date.now() };
+  const at = Date.now();
+  return {
+    ok: true,
+    message: `Saved: ${kg} kg ${WASTE[type].label.toLowerCase()} at ${branchName}`,
+    at,
+    log: { id: logId, branch: branchName, wasteType: type, weightKg: kg, loggedAt: new Date(at).toISOString() },
+  };
 }
 
 /** "Bins full: request pickup". */

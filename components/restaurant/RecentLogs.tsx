@@ -1,10 +1,10 @@
 import { Notice } from "@/components/ui/Bits";
+import { GroupLabel, ListGroup, RowIcon, StaticRow } from "@/components/ui/Group";
 import { Icon } from "@/components/ui/Icon";
-import { GroupLabel, ListGroup, ListRow, RowIcon } from "@/components/ui/List";
 import { relativeDay } from "@/lib/format";
 import { clockTime, WASTE, type BinLog } from "@/lib/kitchen";
 
-/** The last few bins logged across all branches. */
+/** The last few bins logged across all branches. Used inside the Log a bin form, so it has no links. */
 export function RecentLogs({ logs }: { logs: BinLog[] }) {
   return (
     <>
@@ -14,7 +14,7 @@ export function RecentLogs({ logs }: { logs: BinLog[] }) {
           <Notice>No bins logged this month yet.</Notice>
         ) : (
           logs.map((l) => (
-            <ListRow
+            <StaticRow
               key={l.id}
               leading={
                 <RowIcon tone={WASTE[l.wasteType].tone}>

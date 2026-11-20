@@ -11,7 +11,7 @@ const VARIANTS: Record<Variant, string> = {
 };
 
 const BASE =
-  "flex h-[52px] w-full items-center justify-center rounded-[14px] text-[17px] font-semibold transition-opacity disabled:cursor-not-allowed disabled:opacity-45";
+  "flex h-[52px] w-full items-center justify-center rounded-[14px] text-[17px] font-semibold transition-opacity disabled:cursor-not-allowed disabled:bg-chip disabled:text-muted";
 
 type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & { variant?: Variant };
 

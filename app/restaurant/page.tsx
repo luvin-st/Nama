@@ -1,6 +1,5 @@
 import { KitchenHeader, KNotice } from "@/components/restaurant/KitchenShell";
 import { LogBinForm } from "@/components/restaurant/LogBinForm";
-import { RecentLogs } from "@/components/restaurant/RecentLogs";
 import { ScannedBanner } from "@/components/restaurant/ScannedBanner";
 import { ScreenHeader } from "@/components/ui/Bits";
 import { getKitchenDashboard } from "@/lib/data/kitchen";
@@ -23,8 +22,8 @@ export default async function LogBinPage({ searchParams }: Props) {
         key={scanned?.id ?? "none"}
         branches={d.branches.map((b) => ({ id: b.id, name: b.name }))}
         initialBranchId={scanned?.id ?? null}
+        recentLogs={d.recentLogs}
       />
-      <RecentLogs logs={d.recentLogs} />
     </>
   );
 }
