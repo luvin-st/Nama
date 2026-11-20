@@ -4,7 +4,7 @@
  * - Shows /offline.html (plain HTML, no scripts) when a page can't load with no connection.
  * - Never caches pages or data: points, drops and vouchers always come live.
  */
-const VERSION = "nama-v1";
+const VERSION = "nama-v2";
 const STATIC = `${VERSION}-static`;
 const OFFLINE_URL = "/offline.html";
 

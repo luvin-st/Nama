@@ -3,10 +3,10 @@ import { RegisterSW } from "@/components/pwa/RegisterSW";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Nama'",
-  description: "Drop your food scraps, earn grocery rewards and help local farms grow.",
-  applicationName: "Nama'",
-  appleWebApp: { capable: true, title: "Nama'", statusBarStyle: "default" },
+  title: "NAMA",
+  description: "Food-waste collection with a monthly dirham report, for Dubai's restaurant groups.",
+  applicationName: "NAMA",
+  appleWebApp: { capable: true, title: "NAMA", statusBarStyle: "default" },
   formatDetection: { telephone: false },
 };
 

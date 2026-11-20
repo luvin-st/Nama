@@ -24,9 +24,9 @@ function SaveButton({ ready }: { ready: boolean }) {
 }
 
 /** Log a bin: branch, waste type, weight, Save. */
-export function LogBinForm({ branches }: { branches: BranchOption[] }) {
+export function LogBinForm({ branches, initialBranchId }: { branches: BranchOption[]; initialBranchId: number | null }) {
   const [state, action] = useActionState<LogState, FormData>(logBin, null);
-  const [branchId, setBranchId] = useState<number | null>(branches[0]?.id ?? null);
+  const [branchId, setBranchId] = useState<number | null>(initialBranchId ?? branches[0]?.id ?? null);
   const [type, setType] = useState<WasteType | null>(null);
   const [kg, setKg] = useState("");
   const [clearedAt, setClearedAt] = useState(0);

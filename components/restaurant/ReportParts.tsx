@@ -3,11 +3,19 @@ import { formatKg } from "@/lib/format";
 import { KCard } from "./KitchenShell";
 
 /** Big number at the top of the owner report. */
-export function ReportHero({ totalKg, aedPerKg, branchCount, logCount }: { totalKg: number; aedPerKg: number; branchCount: number; logCount: number }) {
+type HeroProps = { totalKg: number; todayKg: number; aedPerKg: number; branchCount: number; logCount: number };
+
+export function ReportHero({ totalKg, todayKg, aedPerKg, branchCount, logCount }: HeroProps) {
   return (
     <section className="rounded-[22px] bg-k-forest p-5 text-white">
       <p className="text-[46px] font-extrabold leading-none tracking-[-1px]">{formatAed(totalKg * aedPerKg)}</p>
       <p className="mt-2 text-[17px] font-semibold">of food in the bin this month</p>
+      {todayKg > 0 ? (
+        <p className="mt-3 inline-flex items-center gap-1.5 rounded-full bg-white/15 px-3 py-1 text-[14px] font-semibold">
+          <span aria-hidden="true">＋</span>
+          {formatAed(todayKg * aedPerKg)} logged today ({formatKg(todayKg)})
+        </p>
+      ) : null}
       <p className="mt-3 text-[14px] text-white/75">
         {formatKg(totalKg)} from {logCount} bins across {branchCount} branches · about {formatAed(aedPerKg)} per kg
       </p>

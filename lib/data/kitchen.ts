@@ -1,6 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import { fail, NETWORK_ERROR, ok, type Result } from "@/lib/result";
-import { isWasteType, type BinLog, type Branch, type KitchenDashboard, type Pickup } from "@/lib/kitchen";
+import { isGrade, isWasteType, type BinLog, type Branch, type KitchenDashboard, type Pickup } from "@/lib/kitchen";
 
 type Obj = Record<string, unknown>;
 const isObj = (v: unknown): v is Obj => typeof v === "object" && v !== null && !Array.isArray(v);
@@ -9,7 +9,7 @@ const str = (v: unknown): string => (typeof v === "string" ? v : "");
 const list = (v: unknown): Obj[] => (Array.isArray(v) ? v.filter(isObj) : []);
 
 function toBranch(o: Obj): Branch {
-  return { id: num(o.id), name: str(o.name), location: str(o.location), monthKg: num(o.monthKg) };
+  return { id: num(o.id), name: str(o.name), location: str(o.location), monthKg: num(o.monthKg), binsToday: num(o.binsToday) };
 }
 
 function toLog(o: Obj): BinLog | null {
@@ -19,7 +19,13 @@ function toLog(o: Obj): BinLog | null {
 }
 
 function toPickup(o: Obj): Pickup {
-  return { id: num(o.id), collectedKg: num(o.collectedKg), collectedAt: str(o.collectedAt) };
+  return {
+    id: num(o.id),
+    collectedKg: num(o.collectedKg),
+    collectedAt: str(o.collectedAt),
+    grade: isGrade(o.grade) ? o.grade : null,
+    collectedBy: str(o.collectedBy) || null,
+  };
 }
 
 /** Everything the restaurant screens need, from the kitchen_dashboard() database function. */
@@ -38,6 +44,7 @@ export async function getKitchenDashboard(): Promise<Result<KitchenDashboard>> {
       branches: list(data.branches).map(toBranch),
       byType: { prep: num(byType.prep), spoilage: num(byType.spoilage), plate: num(byType.plate) },
       logCount: num(data.logCount),
+      todayKg: num(data.todayKg),
       recentLogs: list(data.recentLogs).map(toLog).filter((l): l is BinLog => l !== null),
       pickups: list(data.pickups).map(toPickup),
       openRequest: typeof data.openRequest === "string" ? data.openRequest : null,

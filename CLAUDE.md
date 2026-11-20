@@ -1,7 +1,8 @@
 # Project Overview
 - **App Name:** Nama' (نماء)
 - **Tech Stack:** Next.js 15 (App Router), React 19, TypeScript (strict), Tailwind CSS v4, Supabase (Auth + Postgres)
-- **Primary Goal:** Residents of Dubai apartment buildings drop separated food scraps at their building's Nama' bin, earn verified points, and redeem them for local grocery, bakery and café rewards.
+- **Primary Goal (current, Nov 2026):** NAMA serves Dubai's mid-size restaurant groups: kitchen staff log food waste into 3 bins (prep scraps, spoilage, plate leftovers), a licensed partner collects it, and the owner gets a monthly report of the dirhams wasted, by branch and cause. This is the `/restaurant` app, and `/` opens it.
+- **Earlier pivot (kept, not linked):** the household app for apartment residents (scan a bin, verified points, rewards) still lives at `/welcome`, `/home` and the other `(tabs)` routes.
 
 # Architectural Rules
 - Always use modular, clean, and well-typed code (TypeScript strict mode).
@@ -25,7 +26,7 @@
 - `app/(tabs)/rewards/` — rewards list, redeem sheet, vouchers; vouchers are made only by `redeem_reward` and marked used only by `use_voucher` (staff, `/staff/vouchers`)
 - `app/(tabs)/impact/` + `components/impact/` — impact card, building totals, building + neighbour leaderboards, badges (`lib/badges.ts`); shared numbers come only from SECURITY DEFINER functions in `0005_impact.sql` that return totals and short names
 - PWA: `app/manifest.ts`, `public/sw.js` (caches build files + icons only, never data; serves `public/offline.html`), `components/pwa/` (RegisterSW, InstallCard); icons in `public/icons/` drawn by `scripts/make-icons.ts`
-- Restaurant demo (B2B pitch, no login): `app/restaurant/` (Log a bin, Pickups, Owner report) + `components/restaurant/`; data only via `kitchen_*` functions in `0006_restaurant_demo.sql` (tables locked); sample data for made-up "Rania's Kitchen" is seeded there and tuned to AED 7,480 / 45-35-20; `lib/kitchen.ts` helpers; `/restaurant` is in OPEN_PATHS in `lib/supabase/middleware.ts`
+- Restaurant app (the main product, no login): `app/restaurant/` (Log a bin, Pickups, Owner report, `bins` = printable QR stickers that open Log a bin with the branch picked via `?branch=<id>`) + `components/restaurant/`; data only via `kitchen_*` functions in `0006_restaurant_demo.sql` + `0007_restaurant_extras.sql` (tables locked; 0007 adds pickup grade/collector, today's kg and bins logged today); sample data for made-up "Rania's Kitchen" is tuned to AED 7,480 / 45-35-20; `lib/kitchen.ts` helpers; `/restaurant` is in OPEN_PATHS and `/` redirects there in `lib/supabase/middleware.ts`
 - `components/ui/` — shared building blocks (Button, List, Segmented, Sheet, Icon, Bits)
 - `components/brand/Logo.tsx` — bilingual Nama' | نماء logo
 - `app/globals.css` — design tokens (light + dark); use the Tailwind colour names (`bg-ground`, `bg-card`, `text-ink`, `text-muted`, `bg-forest`, `bg-lime`…)
@@ -44,3 +45,4 @@
 7. Impact (building totals, leaderboard, badges) ✅
 8. PWA install + deploy ✅
 9. Restaurant demo for the IEN pitch (`/restaurant`) ✅
+10. Restaurant pivot: `/` opens the restaurant app, "logged today" on the report, bins logged today + pickup grades, bin QR stickers ✅

@@ -38,8 +38,10 @@ export async function updateSession(request: NextRequest) {
   if (OPEN_PATHS.some((p) => path === p || path.startsWith(`${p}/`))) return response;
   const isPublic = PUBLIC_PATHS.some((p) => path === p || path.startsWith(`${p}/`));
 
+  // NAMA now serves restaurant groups: the main link opens the restaurant app for everyone.
+  // The earlier household app still lives at /welcome and /home, but nothing links to it.
   if (path === "/") {
-    return redirectTo(request, signedIn ? "/home" : "/welcome", response);
+    return redirectTo(request, "/restaurant", response);
   }
   if (!signedIn && !isPublic) {
     // Remember where they were going (e.g. a scanned bin sticker) so login can send them back.

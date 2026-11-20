@@ -1,12 +1,16 @@
-# Nama' (نماء)
+# NAMA (نماء)
 
-Community food-waste collection and rewards app for Dubai apartment buildings. Built for our IEN startup project.
+Food-waste collection with a monthly dirham report, for Dubai's mid-size restaurant groups. Built for our IEN startup project.
+
+The main link opens the restaurant app (`/restaurant`, no login): **Log a bin**, **Pickups** and the **Owner report**, with sample data for a made-up group, Rania's Kitchen (3 branches, AED 7,480 this month). Printable bin QR stickers are at `/restaurant/bins`. The earlier household app for apartment residents is still in the code at `/welcome`, but nothing links to it.
+
+**Before a demo:** open the Owner report and tap **Reset demo data** so it starts from AED 7,480.
 
 ## First-time setup
 
 You need [Node.js 20 or newer](https://nodejs.org) and a free [Supabase](https://supabase.com) project.
 
-1. **Database.** In Supabase, open **SQL Editor → New query**, paste the contents of `supabase/migrations/0001_init.sql` and click **Run**. Then do the same with `supabase/seed.sql`, then each later migration in number order (`0002_…`, `0003_…`).
+1. **Database.** In Supabase, open **SQL Editor → New query**, paste the contents of `supabase/migrations/0001_init.sql` and click **Run**. Then do the same with `supabase/seed.sql`, then each later migration in number order (`0002_…` up to `0007_…`). For the restaurant app alone, `0005` (it has a helper the restaurant files use), `0006` and `0007` are the ones that matter.
 2. **Email confirmation (optional, handy for demos).** Go to **Authentication → Sign In / Providers → Email** and turn off **Confirm email**, so new accounts can log in straight away.
 3. **App settings.** Copy `.env.example` to `.env.local` and fill in your project URL and publishable key. You can find both under **Project Settings → API**, or the **Connect** button.
 4. **Run it:**

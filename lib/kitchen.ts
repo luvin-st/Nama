@@ -15,9 +15,18 @@ export const REPORT_ORDER: readonly WasteType[] = ["spoilage", "prep", "plate"];
 export const MIN_LOG_KG = 0.1;
 export const MAX_LOG_KG = 60;
 
-export type Branch = { id: number; name: string; location: string; monthKg: number };
+/** binsToday = how many of the branch's 3 bins (one per waste type) were logged today. */
+export type Branch = { id: number; name: string; location: string; monthKg: number; binsToday: number };
 export type BinLog = { id: number; branch: string; wasteType: WasteType; weightKg: number; loggedAt: string };
-export type Pickup = { id: number; collectedKg: number; collectedAt: string };
+export type PickupGrade = "A" | "B" | "C";
+export type Pickup = { id: number; collectedKg: number; collectedAt: string; grade: PickupGrade | null; collectedBy: string | null };
+
+/** What each contamination grade means, as shown under a pickup. */
+export const GRADE_LABEL: Record<PickupGrade, string> = { A: "clean", B: "minor mix", C: "mixed" };
+
+export function isGrade(v: unknown): v is PickupGrade {
+  return v === "A" || v === "B" || v === "C";
+}
 
 export type KitchenDashboard = {
   restaurant: string;
@@ -27,6 +36,8 @@ export type KitchenDashboard = {
   branches: Branch[];
   byType: Record<WasteType, number>;
   logCount: number;
+  /** kg logged since midnight (Dubai time), all branches. */
+  todayKg: number;
   recentLogs: BinLog[];
   pickups: Pickup[];
   openRequest: string | null;
