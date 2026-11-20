@@ -1,11 +1,11 @@
 import type { MetadataRoute } from "next";
 
-/** Lets phones install NAMA (the restaurant app) to the home screen and open it full-screen. */
+/** Lets phones install Nama' (the restaurant app) to the home screen and open it full-screen. */
 export default function manifest(): MetadataRoute.Manifest {
   return {
     id: "/restaurant",
-    name: "NAMA",
-    short_name: "NAMA",
+    name: "Nama' | نماء",
+    short_name: "Nama'",
     description: "Log kitchen food waste, request pickups and see what it costs, branch by branch.",
     start_url: "/restaurant",
     scope: "/",

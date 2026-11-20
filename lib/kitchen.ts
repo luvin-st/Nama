@@ -1,12 +1,15 @@
+import type { IconName } from "@/components/ui/Icon";
+
 /** Restaurant demo (NAMA for Rania's Kitchen): shared types and helpers. */
 
 export const WASTE_TYPES = ["prep", "spoilage", "plate"] as const;
 export type WasteType = (typeof WASTE_TYPES)[number];
 
-export const WASTE: Record<WasteType, { label: string; emoji: string; bar: string; dot: string }> = {
-  spoilage: { label: "Spoilage", emoji: "🍅", bar: "bg-k-orange", dot: "bg-k-orange" },
-  prep: { label: "Prep scraps", emoji: "🥕", bar: "bg-k-green", dot: "bg-k-green" },
-  plate: { label: "Plate leftovers", emoji: "🍽️", bar: "bg-k-forest", dot: "bg-k-forest" },
+/** Label, line icon, icon tile tone and chart colour for each waste type (earlier Nama' palette). */
+export const WASTE: Record<WasteType, { label: string; icon: IconName; tone: "forest" | "leaf" | "lime"; bar: string }> = {
+  spoilage: { label: "Spoilage", icon: "apple", tone: "leaf", bar: "bg-leaf" },
+  prep: { label: "Prep scraps", icon: "knife", tone: "lime", bar: "bg-lime" },
+  plate: { label: "Plate leftovers", icon: "plate", tone: "forest", bar: "bg-muted" },
 };
 
 /** Order used on the report (biggest category in the sample first). */

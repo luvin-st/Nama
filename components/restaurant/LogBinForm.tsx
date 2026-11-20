@@ -1,27 +1,15 @@
 "use client";
 
 import { useActionState, useState } from "react";
-import { useFormStatus } from "react-dom";
 import { logBin, type LogState } from "@/app/restaurant/actions";
+import { SubmitButton } from "@/components/auth/SubmitButton";
 import { Icon } from "@/components/ui/Icon";
+import { GroupLabel, ListGroup, RowIcon } from "@/components/ui/Group";
+import { Segmented } from "@/components/ui/Segmented";
+import { useRefreshAfter } from "@/lib/use-refresh-after";
 import { MAX_LOG_KG, parseLogKg, WASTE, WASTE_TYPES, type WasteType } from "@/lib/kitchen";
-import { KCard } from "./KitchenShell";
 
 type BranchOption = { id: number; name: string };
-
-function SaveButton({ ready }: { ready: boolean }) {
-  const { pending } = useFormStatus();
-  return (
-    <button
-      type="submit"
-      disabled={!ready || pending}
-      aria-busy={pending}
-      className="h-[54px] w-full rounded-[14px] bg-k-forest text-[17px] font-semibold text-white transition-opacity disabled:opacity-40"
-    >
-      {pending ? "Saving…" : "Save"}
-    </button>
-  );
-}
 
 /** Log a bin: branch, waste type, weight, Save. */
 export function LogBinForm({ branches, initialBranchId }: { branches: BranchOption[]; initialBranchId: number | null }) {
@@ -30,6 +18,7 @@ export function LogBinForm({ branches, initialBranchId }: { branches: BranchOpti
   const [type, setType] = useState<WasteType | null>(null);
   const [kg, setKg] = useState("");
   const [clearedAt, setClearedAt] = useState(0);
+  useRefreshAfter(state?.ok ? state.at : undefined);
   // After a successful save, empty the weight box (once per save) but keep branch and type.
   if (state?.ok && state.at !== clearedAt) {
     setClearedAt(state.at);
@@ -44,46 +33,39 @@ export function LogBinForm({ branches, initialBranchId }: { branches: BranchOpti
       <input type="hidden" name="branchName" value={branchName} />
       <input type="hidden" name="type" value={type ?? ""} />
 
-      <KCard title="Branch">
-        <div role="radiogroup" aria-label="Branch" className="grid grid-cols-3 gap-1 rounded-[12px] bg-k-ground p-1">
-          {branches.map((b) => (
+      <GroupLabel>Branch</GroupLabel>
+      <Segmented
+        label="Branch"
+        options={branches.map((b) => b.name)}
+        value={branchName}
+        onChange={(name) => setBranchId(branches.find((b) => b.name === name)?.id ?? null)}
+      />
+
+      <GroupLabel>Waste type</GroupLabel>
+      <div role="radiogroup" aria-label="Waste type" className="grid grid-cols-3 gap-2.5">
+        {WASTE_TYPES.map((t) => {
+          const on = t === type;
+          return (
             <button
-              key={b.id}
+              key={t}
               type="button"
               role="radio"
-              aria-checked={b.id === branchId}
-              onClick={() => setBranchId(b.id)}
-              className={`h-10 rounded-[9px] text-[15px] ${b.id === branchId ? "bg-k-forest font-semibold text-white" : "font-medium text-k-ink"}`}
+              aria-checked={on}
+              onClick={() => setType(t)}
+              className={`flex h-[96px] flex-col items-center justify-center gap-2 rounded-[14px] border-[1.5px] bg-card px-1 text-[14px] leading-tight text-ink ${on ? "border-primary font-semibold" : "border-transparent font-medium"}`}
             >
-              {b.name}
+              <RowIcon tone={WASTE[t].tone}>
+                <Icon name={WASTE[t].icon} size={17} strokeWidth={2.1} />
+              </RowIcon>
+              {WASTE[t].label}
             </button>
-          ))}
-        </div>
-      </KCard>
+          );
+        })}
+      </div>
 
-      <KCard title="Waste type">
-        <div role="radiogroup" aria-label="Waste type" className="grid grid-cols-3 gap-2">
-          {WASTE_TYPES.map((t) => {
-            const on = t === type;
-            return (
-              <button
-                key={t}
-                type="button"
-                role="radio"
-                aria-checked={on}
-                onClick={() => setType(t)}
-                className={`flex h-[92px] flex-col items-center justify-center gap-1.5 rounded-[14px] border-2 text-[14px] font-semibold leading-tight ${on ? "border-k-green bg-k-mint text-k-forest" : "border-k-line bg-white text-k-ink"}`}
-              >
-                <span aria-hidden="true" className="text-[28px] leading-none">{WASTE[t].emoji}</span>
-                {WASTE[t].label}
-              </button>
-            );
-          })}
-        </div>
-      </KCard>
-
-      <KCard title="Weight">
-        <label className="flex items-center gap-2 rounded-[12px] border-2 border-k-line px-4 focus-within:border-k-green">
+      <GroupLabel>Weight</GroupLabel>
+      <ListGroup>
+        <label className="flex min-h-12 items-center gap-3 px-4">
           <span className="sr-only">Weight in kilograms</span>
           <input
             name="weight"
@@ -92,22 +74,27 @@ export function LogBinForm({ branches, initialBranchId }: { branches: BranchOpti
             placeholder="0.0"
             value={kg}
             onChange={(e) => setKg(e.target.value)}
-            className="h-14 min-w-0 flex-1 bg-transparent text-[28px] font-bold text-k-ink outline-none focus-visible:outline-none placeholder:text-k-line"
+            className="min-w-0 flex-1 bg-transparent py-3 text-[22px] font-semibold text-ink tabular-nums outline-none placeholder:text-muted"
           />
-          <span className="text-[17px] font-semibold text-k-muted">kg</span>
+          <span className="text-[17px] text-muted">kg</span>
         </label>
-        <p className="mt-2 text-[13px] text-k-muted">Up to {MAX_LOG_KG} kg per bin, for example 4.5</p>
-      </KCard>
+      </ListGroup>
+      <p className="-mt-2 px-4 text-[13px] text-muted">Up to {MAX_LOG_KG} kg per bin, for example 4.5</p>
 
-      <SaveButton ready={ready} />
+      <SubmitButton label="Save" busyLabel="Saving…" disabled={!ready} />
 
       <div aria-live="polite">
         {state?.ok ? (
-          <p key={state.at} className="flex items-center gap-2 rounded-[14px] bg-k-mint px-4 py-3 text-[15px] font-semibold text-k-forest">
-            <Icon name="check" size={20} strokeWidth={2.6} /> {state.message}
+          <p key={state.at} className="flex items-center gap-3 rounded-[14px] bg-card px-4 py-3 text-[15px] font-medium text-ink">
+            <RowIcon tone="lime">
+              <Icon name="check" size={16} strokeWidth={2.8} />
+            </RowIcon>
+            {state.message}
           </p>
         ) : state && !state.ok ? (
-          <p role="alert" className="rounded-[14px] bg-k-peach px-4 py-3 text-[15px] font-medium text-k-orange">{state.error}</p>
+          <p role="alert" className="px-4 text-[14px] text-danger">
+            {state.error}
+          </p>
         ) : null}
       </div>
     </form>

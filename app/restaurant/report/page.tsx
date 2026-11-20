@@ -1,4 +1,5 @@
-import { KitchenHeader, KitchenTitle, KNotice } from "@/components/restaurant/KitchenShell";
+import { KitchenHeader, KNotice } from "@/components/restaurant/KitchenShell";
+import { ScreenHeader } from "@/components/ui/Bits";
 import { BranchLeaderboard, BranchSplit, ReportHero, TipCard, WasteTypeSplit } from "@/components/restaurant/ReportParts";
 import Link from "next/link";
 import { ResetDemo } from "@/components/restaurant/ResetDemo";
@@ -15,14 +16,14 @@ export default async function OwnerReportPage() {
   return (
     <>
       <KitchenHeader restaurant={d.restaurant} />
-      <KitchenTitle title="Owner report" sub={month} />
+      <ScreenHeader title="Owner report" subtitle={month} />
       <ReportHero totalKg={totalKg} todayKg={d.todayKg} aedPerKg={d.aedPerKg} branchCount={d.branches.length} logCount={d.logCount} />
       <WasteTypeSplit byType={d.byType} aedPerKg={d.aedPerKg} />
       <BranchSplit branches={d.branches} aedPerKg={d.aedPerKg} />
       <BranchLeaderboard branches={d.branches} />
       <TipCard tip={d.tip} />
       <ResetDemo />
-      <Link href="/restaurant/bins" className="self-center text-[13px] font-medium text-k-muted underline underline-offset-2">
+      <Link href="/restaurant/bins" className="self-center text-[13px] font-medium text-muted underline underline-offset-2">
         Print bin QR stickers
       </Link>
     </>

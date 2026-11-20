@@ -3,13 +3,14 @@
 import { useActionState, useState } from "react";
 import { useFormStatus } from "react-dom";
 import { resetDemo, type SimpleState } from "@/app/restaurant/actions";
+import { useRefreshAfter } from "@/lib/use-refresh-after";
 
 const LINK = "text-[13px] font-medium underline underline-offset-2";
 
 function ConfirmButton() {
   const { pending } = useFormStatus();
   return (
-    <button type="submit" disabled={pending} className={`${LINK} text-k-orange`}>
+    <button type="submit" disabled={pending} className={`${LINK} text-danger`}>
       {pending ? "Resetting…" : "Tap again to reset to the sample data"}
     </button>
   );
@@ -23,6 +24,7 @@ export function ResetDemo() {
     if (!result?.error) setArmed(false);
     return result;
   }, null);
+  useRefreshAfter(state?.done);
 
   return (
     <div className="flex flex-col items-center gap-1 pt-2">
@@ -31,11 +33,11 @@ export function ResetDemo() {
           <ConfirmButton />
         </form>
       ) : (
-        <button type="button" onClick={() => setArmed(true)} className={`${LINK} text-k-muted`}>
+        <button type="button" onClick={() => setArmed(true)} className={`${LINK} text-muted`}>
           Reset demo data
         </button>
       )}
-      {state?.error ? <p role="alert" className="text-[13px] text-k-orange">{state.error}</p> : null}
+      {state?.error ? <p role="alert" className="text-[13px] text-danger">{state.error}</p> : null}
     </div>
   );
 }

@@ -1,51 +1,60 @@
-import { formatAed, percentages, REPORT_ORDER, WASTE, type Branch, type WasteType } from "@/lib/kitchen";
+import { RankBadge } from "@/components/impact/RankBadge";
+import { Pill } from "@/components/ui/Bits";
+import { Icon } from "@/components/ui/Icon";
+import { GroupLabel, ListGroup, ListRow, RowIcon } from "@/components/ui/List";
 import { formatKg } from "@/lib/format";
-import { KCard } from "./KitchenShell";
+import { formatAed, percentages, REPORT_ORDER, WASTE, type Branch, type WasteType } from "@/lib/kitchen";
 
-/** Big number at the top of the owner report. */
 type HeroProps = { totalKg: number; todayKg: number; aedPerKg: number; branchCount: number; logCount: number };
 
+/** Dark green card at the top of the owner report: food wasted this month, in dirhams. */
 export function ReportHero({ totalKg, todayKg, aedPerKg, branchCount, logCount }: HeroProps) {
   return (
-    <section className="rounded-[22px] bg-k-forest p-5 text-white">
-      <p className="text-[46px] font-extrabold leading-none tracking-[-1px]">{formatAed(totalKg * aedPerKg)}</p>
-      <p className="mt-2 text-[17px] font-semibold">of food in the bin this month</p>
-      {todayKg > 0 ? (
-        <p className="mt-3 inline-flex items-center gap-1.5 rounded-full bg-white/15 px-3 py-1 text-[14px] font-semibold">
-          <span aria-hidden="true">＋</span>
-          {formatAed(todayKg * aedPerKg)} logged today ({formatKg(todayKg)})
-        </p>
-      ) : null}
-      <p className="mt-3 text-[14px] text-white/75">
+    <section aria-label="Food in the bin this month" className="rounded-[22px] bg-hero p-5 text-on-hero">
+      <div className="flex items-center justify-between gap-2">
+        <span className="text-[15px] font-medium text-on-hero-muted">Food in the bin this month</span>
+        {todayKg > 0 ? <Pill>+ {formatAed(todayKg * aedPerKg)} today</Pill> : null}
+      </div>
+      <div className="mt-2 text-[48px] font-bold leading-none tracking-[-1px] tabular-nums">{formatAed(totalKg * aedPerKg)}</div>
+      <p className="mt-3 text-[13px] text-on-hero-muted">
         {formatKg(totalKg)} from {logCount} bins across {branchCount} branches · about {formatAed(aedPerKg)} per kg
+        {todayKg > 0 ? ` · ${formatKg(todayKg)} logged today` : ""}
       </p>
     </section>
   );
 }
 
-/** Spoilage / prep scraps / plate leftovers as one stacked bar plus a legend. */
+/** Spoilage / prep scraps / plate leftovers: one stacked bar, then a row per type. */
 export function WasteTypeSplit({ byType, aedPerKg }: { byType: Record<WasteType, number>; aedPerKg: number }) {
   const pcts = percentages(REPORT_ORDER.map((t) => byType[t]));
   const rows = REPORT_ORDER.map((t, i) => ({ t, kg: byType[t], pct: pcts[i] ?? 0 }));
 
   return (
-    <KCard title="By waste type">
-      <div className="flex h-4 overflow-hidden rounded-full bg-k-line" aria-hidden="true">
+    <>
+      <GroupLabel>By waste type</GroupLabel>
+      <ListGroup>
+        <div className="px-4 py-3.5">
+          <div className="flex h-2.5 gap-0.5 overflow-hidden rounded-full bg-track" aria-hidden="true">
+            {rows.map((r) => (
+              <div key={r.t} className={WASTE[r.t].bar} style={{ width: `${r.pct}%` }} />
+            ))}
+          </div>
+        </div>
         {rows.map((r) => (
-          <div key={r.t} className={WASTE[r.t].bar} style={{ width: `${r.pct}%` }} />
+          <ListRow
+            key={r.t}
+            leading={
+              <RowIcon tone={WASTE[r.t].tone}>
+                <Icon name={WASTE[r.t].icon} size={16} strokeWidth={2.1} />
+              </RowIcon>
+            }
+            title={WASTE[r.t].label}
+            note={formatAed(r.kg * aedPerKg)}
+            trailing={<span className="text-[17px] font-semibold tabular-nums">{r.pct}%</span>}
+          />
         ))}
-      </div>
-      <ul className="mt-3 flex flex-col gap-2.5">
-        {rows.map((r) => (
-          <li key={r.t} className="flex items-center gap-3">
-            <span className={`size-3 shrink-0 rounded-full ${WASTE[r.t].dot}`} aria-hidden="true" />
-            <span className="flex-1 text-[15px] font-medium text-k-ink">{WASTE[r.t].label}</span>
-            <span className="text-[14px] text-k-muted">{formatAed(r.kg * aedPerKg)}</span>
-            <span className="w-12 text-right text-[17px] font-bold text-k-ink">{r.pct}%</span>
-          </li>
-        ))}
-      </ul>
-    </KCard>
+      </ListGroup>
+    </>
   );
 }
 
@@ -55,56 +64,62 @@ export function BranchSplit({ branches, aedPerKg }: { branches: Branch[]; aedPer
   const max = Math.max(1, ...branches.map((b) => b.monthKg));
 
   return (
-    <KCard title="By branch">
-      <ul className="flex flex-col gap-3.5">
+    <>
+      <GroupLabel>By branch</GroupLabel>
+      <ListGroup>
         {branches.map((b, i) => (
-          <li key={b.id}>
+          <div key={b.id} className="px-4 py-3">
             <div className="flex items-baseline justify-between gap-2">
-              <span className="text-[15px] font-semibold text-k-ink">{b.name}</span>
-              <span className="text-[14px] text-k-muted">
-                {formatAed(b.monthKg * aedPerKg)} · <span className="font-bold text-k-ink">{pcts[i] ?? 0}%</span>
+              <span className="text-[17px] text-ink">{b.name}</span>
+              <span className="text-[15px] text-muted tabular-nums">
+                {formatAed(b.monthKg * aedPerKg)} · <span className="font-semibold text-ink">{pcts[i] ?? 0}%</span>
               </span>
             </div>
-            <div className="mt-1.5 h-2.5 overflow-hidden rounded-full bg-k-line" aria-hidden="true">
-              <div className="h-full rounded-full bg-k-green" style={{ width: `${(b.monthKg / max) * 100}%` }} />
+            <div className="mt-2 h-2 overflow-hidden rounded bg-track" aria-hidden="true">
+              <div className="h-full rounded bg-leaf" style={{ width: `${(b.monthKg / max) * 100}%` }} />
             </div>
-          </li>
+          </div>
         ))}
-      </ul>
-    </KCard>
+      </ListGroup>
+    </>
   );
 }
-
-const MEDALS = ["🥇", "🥈", "🥉"];
 
 /** Branches ranked from least to most waste this month. */
 export function BranchLeaderboard({ branches }: { branches: Branch[] }) {
   const ranked = [...branches].sort((a, b) => a.monthKg - b.monthKg);
   return (
-    <KCard title="Least waste wins">
-      <ol className="flex flex-col gap-1">
+    <>
+      <GroupLabel>Least waste wins</GroupLabel>
+      <ListGroup>
         {ranked.map((b, i) => (
-          <li key={b.id} className={`flex items-center gap-3 rounded-[12px] px-2 py-2 ${i === 0 ? "bg-k-mint" : ""}`}>
-            <span className="w-7 text-center text-[20px]" aria-hidden="true">{MEDALS[i] ?? i + 1}</span>
-            <span className="sr-only">Rank {i + 1}:</span>
-            <span className="flex-1 text-[15px] font-semibold text-k-ink">{b.name}</span>
-            <span className="text-[15px] font-medium text-k-muted">{formatKg(b.monthKg)}</span>
-          </li>
+          <ListRow
+            key={b.id}
+            leading={<RankBadge rank={i + 1} />}
+            title={<span className={i === 0 ? "font-semibold" : undefined}>{b.name}</span>}
+            trailing={<span className="text-[15px] text-muted tabular-nums">{formatKg(b.monthKg)}</span>}
+          />
         ))}
-      </ol>
-    </KCard>
+      </ListGroup>
+    </>
   );
 }
 
 /** The one tip at the bottom of the report. */
 export function TipCard({ tip }: { tip: string }) {
   return (
-    <section className="flex items-start gap-3 rounded-[18px] bg-k-peach p-4">
-      <span aria-hidden="true" className="text-[24px] leading-none">💡</span>
-      <div>
-        <h2 className="text-[13px] font-semibold uppercase tracking-[0.06em] text-k-orange">Tip for this week</h2>
-        <p className="mt-1 text-[18px] font-bold leading-snug text-k-ink">{tip}</p>
-      </div>
-    </section>
+    <>
+      <GroupLabel>Tip for this week</GroupLabel>
+      <ListGroup>
+        <ListRow
+          leading={
+            <RowIcon tone="lime">
+              <Icon name="bulb" size={17} strokeWidth={2.1} />
+            </RowIcon>
+          }
+          title={<span className="font-semibold">{tip}</span>}
+        />
+      </ListGroup>
+    </>
   );
 }

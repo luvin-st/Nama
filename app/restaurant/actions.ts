@@ -1,12 +1,11 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
 import { isWasteType, MAX_LOG_KG, MIN_LOG_KG, parseLogKg, WASTE } from "@/lib/kitchen";
 import { NETWORK_ERROR } from "@/lib/result";
 import { createClient } from "@/lib/supabase/server";
 
 export type LogState = { ok: true; message: string; at: number } | { ok: false; error: string } | null;
-export type SimpleState = { error?: string } | null;
+export type SimpleState = { error?: string; done?: number } | null;
 
 const DB_ERRORS: Record<string, string> = {
   BAD_BRANCH: "Choose a branch.",
@@ -19,6 +18,10 @@ function friendly(message: string | undefined): string {
   const key = Object.keys(DB_ERRORS).find((k) => message?.includes(k));
   return key ? (DB_ERRORS[key] ?? NETWORK_ERROR) : "We couldn't save this. Please try again.";
 }
+
+// These actions don't revalidate on the server. The screen calls router.refresh() itself once an
+// action has answered: revalidating inside the action left the button stuck on "Saving…" when the
+// page was scrolled (production build).
 
 /** Kitchen staff log one bin: branch, waste type and weight. */
 export async function logBin(_prev: LogState, fd: FormData): Promise<LogState> {
@@ -38,7 +41,6 @@ export async function logBin(_prev: LogState, fd: FormData): Promise<LogState> {
     return { ok: false, error: NETWORK_ERROR };
   }
 
-  revalidatePath("/restaurant", "layout");
   return { ok: true, message: `Saved: ${kg} kg ${WASTE[type].label.toLowerCase()} at ${branchName}`, at: Date.now() };
 }
 
@@ -51,8 +53,7 @@ export async function requestPickup(): Promise<SimpleState> {
   } catch {
     return { error: NETWORK_ERROR };
   }
-  revalidatePath("/restaurant", "layout");
-  return null;
+  return { done: Date.now() };
 }
 
 /** Puts the demo back to the 15 sample logs (AED 7,480). */
@@ -64,6 +65,5 @@ export async function resetDemo(): Promise<SimpleState> {
   } catch {
     return { error: NETWORK_ERROR };
   }
-  revalidatePath("/restaurant", "layout");
-  return null;
+  return { done: Date.now() };
 }

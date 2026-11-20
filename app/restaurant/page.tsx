@@ -1,7 +1,8 @@
-import { KitchenHeader, KitchenTitle, KNotice } from "@/components/restaurant/KitchenShell";
+import { KitchenHeader, KNotice } from "@/components/restaurant/KitchenShell";
 import { LogBinForm } from "@/components/restaurant/LogBinForm";
 import { RecentLogs } from "@/components/restaurant/RecentLogs";
 import { ScannedBanner } from "@/components/restaurant/ScannedBanner";
+import { ScreenHeader } from "@/components/ui/Bits";
 import { getKitchenDashboard } from "@/lib/data/kitchen";
 
 type Props = { searchParams: Promise<{ branch?: string }> };
@@ -16,7 +17,7 @@ export default async function LogBinPage({ searchParams }: Props) {
   return (
     <>
       <KitchenHeader restaurant={d.restaurant} />
-      <KitchenTitle title="Log a bin" sub="Weigh the bin, pick the type, save." />
+      <ScreenHeader title="Log a bin" subtitle="Weigh the bin, pick the type, save." />
       {scanned ? <ScannedBanner branch={scanned.name} /> : null}
       <LogBinForm
         key={scanned?.id ?? "none"}

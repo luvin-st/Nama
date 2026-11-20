@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import { headers } from "next/headers";
 import QRCode from "qrcode";
-import { KCard, KitchenHeader, KitchenTitle, KNotice } from "@/components/restaurant/KitchenShell";
+import { LogoEnglish } from "@/components/brand/Logo";
+import { KCard, KitchenHeader, KNotice } from "@/components/restaurant/KitchenShell";
+import { ScreenHeader } from "@/components/ui/Bits";
 import { getKitchenDashboard } from "@/lib/data/kitchen";
 import type { Branch } from "@/lib/kitchen";
 
@@ -20,7 +22,7 @@ async function Sticker({ branch, base }: { branch: Branch; base: string }) {
     svg = await QRCode.toString(`${base}/restaurant?branch=${branch.id}`, {
       type: "svg",
       margin: 1,
-      color: { dark: "#1f4d3a", light: "#ffffff" },
+      color: { dark: "#0f3d2e", light: "#ffffff" },
     });
   } catch {
     svg = "";
@@ -29,12 +31,15 @@ async function Sticker({ branch, base }: { branch: Branch; base: string }) {
     <li className="break-inside-avoid">
       <KCard className="flex flex-col items-center gap-2 text-center">
         {svg ? (
-          <div role="img" aria-label={`QR code for the ${branch.name} bins`} className="w-[180px]" dangerouslySetInnerHTML={{ __html: svg }} />
+          <div role="img" aria-label={`QR code for the ${branch.name} bins`} className="w-[180px] rounded-lg bg-white p-1.5" dangerouslySetInnerHTML={{ __html: svg }} />
         ) : (
-          <p className="py-6 text-[14px] text-k-orange">The QR code couldn&apos;t be drawn.</p>
+          <p className="py-6 text-[14px] text-danger">The QR code couldn&apos;t be drawn.</p>
         )}
-        <p className="text-[20px] font-extrabold tracking-[0.04em] text-k-forest">NAMA 🌱 {branch.name}</p>
-        <p className="text-[13px] text-k-muted">{branch.location} · Scan to log a bin</p>
+        <span className="flex items-center gap-2 text-[var(--logo-ink)]">
+          <LogoEnglish width={72} />
+          <span className="text-[20px] font-bold text-ink">{branch.name}</span>
+        </span>
+        <p className="text-[13px] text-muted">{branch.location} · Scan to log a bin</p>
       </KCard>
     </li>
   );
@@ -49,7 +54,7 @@ export default async function BinStickersPage() {
   return (
     <>
       <KitchenHeader restaurant={res.data.restaurant} />
-      <KitchenTitle title="Bin QR stickers" sub="Print and stick one on each branch's bins." />
+      <ScreenHeader title="Bin QR stickers" subtitle="Print and stick one on each branch's bins." />
       <ul className="grid grid-cols-1 gap-4">
         {res.data.branches.map((b) => (
           <Sticker key={b.id} branch={b} base={base} />

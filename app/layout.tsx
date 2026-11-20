@@ -3,10 +3,10 @@ import { RegisterSW } from "@/components/pwa/RegisterSW";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "NAMA",
+  title: "Nama'",
   description: "Food-waste collection with a monthly dirham report, for Dubai's restaurant groups.",
-  applicationName: "NAMA",
-  appleWebApp: { capable: true, title: "NAMA", statusBarStyle: "default" },
+  applicationName: "Nama'",
+  appleWebApp: { capable: true, title: "Nama'", statusBarStyle: "default" },
   formatDetection: { telephone: false },
 };
 

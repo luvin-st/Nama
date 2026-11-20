@@ -2,15 +2,7 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 import { Icon } from "./Icon";
 
-/** Small uppercase heading above a grouped list, iOS style. */
-export function GroupLabel({ children }: { children: ReactNode }) {
-  return <h2 className="-mb-2 px-4 text-[13px] font-normal uppercase tracking-[0.3px] text-muted">{children}</h2>;
-}
-
-/** White rounded container; rows inside get hairline separators. */
-export function ListGroup({ children }: { children: ReactNode }) {
-  return <div className="divide-y-[0.5px] divide-sep overflow-hidden rounded-[14px] bg-card">{children}</div>;
-}
+export { GroupLabel, ListGroup, RowIcon } from "./Group";
 
 type RowProps = {
   leading?: ReactNode;
@@ -41,16 +33,4 @@ export function ListRow({ leading, title, note, trailing, href }: RowProps) {
   ) : (
     <div className={cls}>{body}</div>
   );
-}
-
-type Tone = "forest" | "leaf" | "lime";
-const TONES: Record<Tone, string> = {
-  forest: "bg-forest text-lime",
-  leaf: "bg-[#2f7a4d] text-white",
-  lime: "bg-lime text-lime-ink",
-};
-
-/** Rounded-square icon used at the start of a row. */
-export function RowIcon({ tone, children }: { tone: Tone; children: ReactNode }) {
-  return <span className={`flex size-[30px] shrink-0 items-center justify-center rounded-lg ${TONES[tone]}`}>{children}</span>;
 }
