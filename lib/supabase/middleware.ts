@@ -5,8 +5,15 @@ import { safeNext } from "@/lib/next-path";
 import { supabaseEnv } from "./env";
 
 const PUBLIC_PATHS = ["/welcome", "/login", "/signup"];
-/** Open to everyone, signed in or not (restaurant demo shown from a QR code). */
-const OPEN_PATHS = ["/restaurant"];
+/** The login portal: open to everyone. Its pages send logged-in people to their own side. */
+const PORTAL_PATHS = ["/portal"];
+/** Restaurant and Nama staff apps: logged out → that side's login, then back here. */
+const SIDE_APPS: { prefix: string; login: string }[] = [
+  { prefix: "/restaurant", login: "/portal/restaurant" },
+  { prefix: "/nama-staff", login: "/portal/staff" },
+];
+
+const under = (path: string, p: string) => path === p || path.startsWith(`${p}/`);
 
 /** Refreshes the login session cookie and sends people to the right side of the app. */
 export async function updateSession(request: NextRequest) {
@@ -35,14 +42,19 @@ export async function updateSession(request: NextRequest) {
   }
 
   const path = request.nextUrl.pathname;
-  if (OPEN_PATHS.some((p) => path === p || path.startsWith(`${p}/`))) return response;
-  const isPublic = PUBLIC_PATHS.some((p) => path === p || path.startsWith(`${p}/`));
-
-  // NAMA now serves restaurant groups: the main link opens the restaurant app for everyone.
+  // NAMA now serves restaurant groups: the main link opens the login portal.
   // The earlier household app still lives at /welcome and /home, but nothing links to it.
-  if (path === "/") {
-    return redirectTo(request, "/restaurant", response);
+  if (path === "/" || PORTAL_PATHS.some((p) => under(path, p))) return response;
+
+  // Which side someone is on is checked by each app's layout (it needs the database).
+  const app = SIDE_APPS.find((a) => under(path, a.prefix));
+  if (app) {
+    if (signedIn) return response;
+    const next = safeNext(path + request.nextUrl.search);
+    return redirectTo(request, app.login, response, next ? { next } : undefined);
   }
+
+  const isPublic = PUBLIC_PATHS.some((p) => under(path, p));
   if (!signedIn && !isPublic) {
     // Remember where they were going (e.g. a scanned bin sticker) so login can send them back.
     const next = safeNext(path + request.nextUrl.search);

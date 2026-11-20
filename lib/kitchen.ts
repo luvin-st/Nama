@@ -22,7 +22,15 @@ export const MAX_LOG_KG = 60;
 export type Branch = { id: number; name: string; location: string; monthKg: number; binsToday: number };
 export type BinLog = { id: number; branch: string; wasteType: WasteType; weightKg: number; loggedAt: string };
 export type PickupGrade = "A" | "B" | "C";
-export type Pickup = { id: number; collectedKg: number; collectedAt: string; grade: PickupGrade | null; collectedBy: string | null };
+/** branch is null for pickups that covered all branches (the sample route). */
+export type Pickup = {
+  id: number;
+  collectedKg: number;
+  collectedAt: string;
+  grade: PickupGrade | null;
+  collectedBy: string | null;
+  branch: string | null;
+};
 
 /** What each contamination grade means, as shown under a pickup. */
 export const GRADE_LABEL: Record<PickupGrade, string> = { A: "clean", B: "minor mix", C: "mixed" };

@@ -7,7 +7,7 @@ export default function manifest(): MetadataRoute.Manifest {
     name: "Nama' | نماء",
     short_name: "Nama'",
     description: "Log kitchen food waste, request pickups and see what it costs, branch by branch.",
-    start_url: "/restaurant",
+    start_url: "/",
     scope: "/",
     display: "standalone",
     orientation: "portrait",

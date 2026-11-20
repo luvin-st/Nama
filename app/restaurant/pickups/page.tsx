@@ -40,7 +40,7 @@ export default async function PickupsPage() {
             <ListRow
               key={p.id}
               title={`${formatKg(p.collectedKg)} collected`}
-              note={[weekdayDate(p.collectedAt), p.collectedBy].filter(Boolean).join(" · ")}
+              note={[weekdayDate(p.collectedAt), p.branch, p.collectedBy].filter(Boolean).join(" · ")}
               trailing={
                 p.grade ? (
                   <Pill tone={p.grade === "A" ? "ok" : "wait"}>

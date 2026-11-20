@@ -1,4 +1,4 @@
-const AUTH_PAGES = ["/welcome", "/login", "/signup"];
+const AUTH_PAGES = ["/welcome", "/login", "/signup", "/portal"];
 
 /**
  * A page inside the app to return to after logging in, e.g. "/scan/confirm?bin=NAMA-B02".

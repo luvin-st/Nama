@@ -1,12 +1,8 @@
 import { createClient } from "@/lib/supabase/server";
 import { fail, NETWORK_ERROR, ok, type Result } from "@/lib/result";
+import { isObj, list, num, str, type Obj } from "./json";
 import { isGrade, isWasteType, type BinLog, type Branch, type KitchenDashboard, type Pickup } from "@/lib/kitchen";
 
-type Obj = Record<string, unknown>;
-const isObj = (v: unknown): v is Obj => typeof v === "object" && v !== null && !Array.isArray(v);
-const num = (v: unknown): number => (typeof v === "number" ? v : Number(v ?? 0)) || 0;
-const str = (v: unknown): string => (typeof v === "string" ? v : "");
-const list = (v: unknown): Obj[] => (Array.isArray(v) ? v.filter(isObj) : []);
 
 function toBranch(o: Obj): Branch {
   return { id: num(o.id), name: str(o.name), location: str(o.location), monthKg: num(o.monthKg), binsToday: num(o.binsToday) };
@@ -18,13 +14,14 @@ function toLog(o: Obj): BinLog | null {
   return { id: num(o.id), branch: str(o.branch), wasteType: t, weightKg: num(o.weightKg), loggedAt: str(o.loggedAt) };
 }
 
-function toPickup(o: Obj): Pickup {
+export function toPickup(o: Obj): Pickup {
   return {
     id: num(o.id),
     collectedKg: num(o.collectedKg),
     collectedAt: str(o.collectedAt),
     grade: isGrade(o.grade) ? o.grade : null,
     collectedBy: str(o.collectedBy) || null,
+    branch: str(o.branch) || null,
   };
 }
 

@@ -123,11 +123,17 @@ export type Database = {
         Args: Record<never, never>;
         Returns: { rank: number; display_name: string; month_kg: number; is_me: boolean; hidden: boolean }[];
       };
-      // Restaurant demo (0006). The dashboard JSON is checked in lib/data/kitchen.ts.
+      // Restaurant demo (0006, 0007; members only since 0008). The dashboard JSON is checked in lib/data/kitchen.ts.
       kitchen_dashboard: { Args: Record<never, never>; Returns: unknown };
       kitchen_log_bin: { Args: { p_branch_id: number; p_waste_type: string; p_weight_kg: number }; Returns: number };
       kitchen_request_pickup: { Args: Record<never, never>; Returns: string };
       kitchen_reset_demo: { Args: Record<never, never>; Returns: undefined };
+      // Login portal + Nama staff (0008). The route JSON is checked in lib/data/nama-staff.ts.
+      kitchen_my_role: { Args: Record<never, never>; Returns: string | null };
+      kitchen_check_staff_code: { Args: { p_code: string }; Returns: boolean };
+      kitchen_join: { Args: { p_kind: string; p_company: string | null; p_code: string | null }; Returns: string };
+      kitchen_staff_route: { Args: Record<never, never>; Returns: unknown };
+      kitchen_collect: { Args: { p_branch_id: number; p_kg: number; p_grade: string; p_reason: string | null }; Returns: number };
     };
     Enums: Record<never, never>;
     CompositeTypes: Record<never, never>;

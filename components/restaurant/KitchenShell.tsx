@@ -2,15 +2,19 @@ import type { ReactNode } from "react";
 import { LogoEnglish } from "@/components/brand/Logo";
 import { Notice, Pill } from "@/components/ui/Bits";
 import { GroupLabel } from "@/components/ui/List";
+import { SignOutForm } from "@/components/portal/SignOutForm";
 
-/** Top bar: the Nama' wordmark and the restaurant group's name. */
+/** Top bar: the Nama' wordmark, whose screens these are (restaurant group or "Nama staff") and Log out. */
 export function KitchenHeader({ restaurant }: { restaurant: string }) {
   return (
     <header className="flex items-center justify-between gap-3 px-1">
       <span className="text-[var(--logo-ink)]">
         <LogoEnglish width={88} />
       </span>
-      <Pill tone="wait">{restaurant}</Pill>
+      <div className="flex min-w-0 items-center gap-3">
+        <Pill tone="wait">{restaurant}</Pill>
+        <SignOutForm />
+      </div>
     </header>
   );
 }
