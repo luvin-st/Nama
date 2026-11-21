@@ -1,3 +1,4 @@
+import type { Booking } from "@/lib/booking";
 import { formatKg } from "@/lib/format";
 import { WASTE, WASTE_TYPES, type PickupGrade, type WasteType } from "@/lib/kitchen";
 
@@ -39,6 +40,7 @@ export type StaffRoute = {
   restaurant: string;
   nextPickup: string;
   openRequest: string | null;
+  booking: Booking | null;
   stops: Stop[];
   collected: Collection[];
 };

@@ -2,7 +2,7 @@ import { isGrade, isWasteType, type WasteType } from "@/lib/kitchen";
 import type { Collection, StaffRoute, Stop } from "@/lib/nama-staff";
 import { fail, NETWORK_ERROR, ok, type Result } from "@/lib/result";
 import { createClient } from "@/lib/supabase/server";
-import { isObj, list, num, str, type Obj } from "./json";
+import { isObj, list, num, str, toBooking, type Obj }  from "./json";
 
 function toStop(o: Obj): Stop {
   const byType: Partial<Record<WasteType, number>> = {};
@@ -42,6 +42,7 @@ export async function getStaffRoute(): Promise<Result<StaffRoute>> {
       restaurant: str(data.restaurant),
       nextPickup: str(data.nextPickup),
       openRequest: typeof data.openRequest === "string" ? data.openRequest : null,
+      booking: toBooking(data.booking),
       stops: list(data.stops).map(toStop),
       collected: list(data.collected).map(toCollection),
     });

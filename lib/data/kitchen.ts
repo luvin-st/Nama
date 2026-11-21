@@ -1,6 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import { fail, NETWORK_ERROR, ok, type Result } from "@/lib/result";
-import { isObj, list, num, str, type Obj } from "./json";
+import { isObj, list, num, str, toBooking, type Obj }  from "./json";
 import { isGrade, isWasteType, type BinLog, type Branch, type KitchenDashboard, type Pickup } from "@/lib/kitchen";
 
 
@@ -45,6 +45,7 @@ export async function getKitchenDashboard(): Promise<Result<KitchenDashboard>> {
       recentLogs: list(data.recentLogs).map(toLog).filter((l): l is BinLog => l !== null),
       pickups: list(data.pickups).map(toPickup),
       openRequest: typeof data.openRequest === "string" ? data.openRequest : null,
+      booking: toBooking(data.booking),
     });
   } catch {
     return fail(NETWORK_ERROR);

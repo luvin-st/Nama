@@ -37,7 +37,7 @@ export default async function RoutePage() {
                 ? `Collected ${formatKg(s.collected.kg)} at ${clockTime(s.collected.at)}${s.collected.grade ? `, grade ${s.collected.grade}` : ""}`
                 : `${s.location} · ${loggedToday(s)}`
             }
-            trailing={s.collected ? <Pill>Done</Pill> : r.openRequest ? <Pill tone="wait">Requested</Pill> : null}
+            trailing={s.collected ? <Pill>Done</Pill> : r.booking ? <Pill tone="wait">Booked</Pill> : r.openRequest ? <Pill tone="wait">Requested</Pill> : null}
           />
         ))}
       </ListGroup>

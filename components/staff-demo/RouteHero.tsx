@@ -1,5 +1,6 @@
 import { Pill } from "@/components/ui/Bits";
 import { Icon } from "@/components/ui/Icon";
+import { bookingLabel } from "@/lib/booking";
 import { formatKg } from "@/lib/format";
 import { clockTime, weekdayDate } from "@/lib/kitchen";
 import type { StaffRoute } from "@/lib/nama-staff";
@@ -16,7 +17,11 @@ export function RouteHero({ route }: { route: StaffRoute }) {
         <span className="flex items-center gap-2 text-[15px] font-medium text-on-hero-muted">
           <Icon name="calendar" size={18} /> {weekdayDate(today)}
         </span>
-        {route.openRequest ? <Pill>Pickup requested {clockTime(route.openRequest)}</Pill> : null}
+        {route.booking ? (
+          <Pill>Booked: {bookingLabel(route.booking, true)}</Pill>
+        ) : route.openRequest ? (
+          <Pill>Pickup requested {clockTime(route.openRequest)}</Pill>
+        ) : null}
       </div>
       <p className="mt-2 text-[30px] font-bold leading-tight tracking-[-0.4px]">
         {left === 0 ? "All stops collected" : `${left} of ${route.stops.length} stops to go`}

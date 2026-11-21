@@ -1,3 +1,4 @@
+import type { Booking } from "@/lib/booking";
 import type { IconName } from "@/components/ui/Icon";
 
 /** Restaurant demo (NAMA for Rania's Kitchen): shared types and helpers. */
@@ -52,6 +53,8 @@ export type KitchenDashboard = {
   recentLogs: BinLog[];
   pickups: Pickup[];
   openRequest: string | null;
+  /** The pickup the restaurant booked (day and time), if any. */
+  booking: Booking | null;
 };
 
 export function isWasteType(v: string): v is WasteType {

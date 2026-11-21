@@ -8,7 +8,7 @@ import { getKitchenDashboard } from "@/lib/data/kitchen";
 import { formatKg } from "@/lib/format";
 import { GRADE_LABEL, weekdayDate } from "@/lib/kitchen";
 
-/** Screen 2: next pickup, today's bins, request a pickup, past pickups. */
+/** Screen 2: next pickup, today's bins, book a pickup (day and time), past pickups. */
 export default async function PickupsPage() {
   const res = await getKitchenDashboard();
   if (!res.ok) return <KNotice>{res.error}</KNotice>;
@@ -29,7 +29,7 @@ export default async function PickupsPage() {
 
       <BinsToday branches={d.branches} />
 
-      <PickupRequest openRequest={d.openRequest} />
+      <PickupRequest booking={d.booking} branches={d.branches.length} />
 
       <GroupLabel>Past pickups</GroupLabel>
       <ListGroup>

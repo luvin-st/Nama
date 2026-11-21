@@ -133,6 +133,8 @@ export type Database = {
       kitchen_check_staff_code: { Args: { p_code: string }; Returns: boolean };
       kitchen_join: { Args: { p_kind: string; p_company: string | null; p_code: string | null }; Returns: string };
       kitchen_staff_route: { Args: Record<never, never>; Returns: unknown };
+      kitchen_book_pickup: { Args: { p_day: string; p_slot: string }; Returns: string };
+      kitchen_cancel_pickup: { Args: Record<never, never>; Returns: undefined };
       kitchen_collect: { Args: { p_branch_id: number; p_kg: number; p_grade: string; p_reason: string | null }; Returns: number };
     };
     Enums: Record<never, never>;

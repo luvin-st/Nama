@@ -2,6 +2,7 @@
 
 import { isWasteType, MAX_LOG_KG, MIN_LOG_KG, parseLogKg, WASTE, type BinLog } from "@/lib/kitchen";
 import { NETWORK_ERROR } from "@/lib/result";
+import { isDay, isSlot, slotOpen, type Booking } from "@/lib/booking";
 import { createClient } from "@/lib/supabase/server";
 
 /** On success, `log` is the bin just saved, so the screen can add it to "Latest bins" without reloading. */
@@ -54,12 +55,41 @@ export async function logBin(_prev: LogState, fd: FormData): Promise<LogState> {
   };
 }
 
-/** "Bins full: request pickup". */
-export async function requestPickup(): Promise<SimpleState> {
+export type BookState = { ok: true; booking: Booking; at: number } | { ok: false; error: string } | null;
+
+const BOOK_ERRORS: Record<string, string> = {
+  BAD_DAY: "Choose a day from today to 6 days ahead.",
+  BAD_SLOT: "Choose a time.",
+  SLOT_STARTED: "That time has already started today. Choose a later time or another day.",
+  NOT_ALLOWED: "Only restaurant accounts can book pickups.",
+};
+
+/** Books (or changes) the pickup: a day and a time slot, for all branches. */
+export async function bookPickup(_prev: BookState, fd: FormData): Promise<BookState> {
+  const day = fd.get("day");
+  const slot = fd.get("slot");
+  if (!isDay(day)) return { ok: false, error: BOOK_ERRORS.BAD_DAY ?? "" };
+  if (!isSlot(slot)) return { ok: false, error: BOOK_ERRORS.BAD_SLOT ?? "" };
+  if (!slotOpen(day, slot)) return { ok: false, error: BOOK_ERRORS.SLOT_STARTED ?? "" };
+
   try {
     const supabase = await createClient();
-    const { error } = await supabase.rpc("kitchen_request_pickup");
-    if (error) return { error: "We couldn't send the request. Please try again." };
+    const { data, error } = await supabase.rpc("kitchen_book_pickup", { p_day: day, p_slot: slot });
+    if (error) {
+      const key = Object.keys(BOOK_ERRORS).find((k) => error.message.includes(k));
+      return { ok: false, error: (key && BOOK_ERRORS[key]) || "We couldn't book the pickup. Please try again." };
+    }
+    return { ok: true, booking: { day, slot, requestedAt: String(data ?? new Date().toISOString()) }, at: Date.now() };
+  } catch {
+    return { ok: false, error: NETWORK_ERROR };
+  }
+}
+
+export async function cancelPickup(): Promise<SimpleState> {
+  try {
+    const supabase = await createClient();
+    const { error } = await supabase.rpc("kitchen_cancel_pickup");
+    if (error) return { error: "We couldn't cancel the booking. Please try again." };
   } catch {
     return { error: NETWORK_ERROR };
   }
